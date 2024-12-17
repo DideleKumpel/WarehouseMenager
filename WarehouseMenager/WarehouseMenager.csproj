@@ -56,6 +56,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\locationModel.cs" />
+    <Compile Include="Model\productModel.cs" />
     <Compile Include="Model\taskModel.cs" />
     <Compile Include="Model\userModel.cs" />
     <Compile Include="MVVM\ReleyCommand.cs" />
@@ -123,6 +124,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Service\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
