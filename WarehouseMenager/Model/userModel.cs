@@ -1,5 +1,4 @@
 ﻿
-
 namespace WarehouseMenager.Model
 {
     internal class userModel

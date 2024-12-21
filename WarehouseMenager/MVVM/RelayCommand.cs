@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace WarehouseMenager.MVVM
 {
-    internal class ReleyCommand : ICommand
+    internal class RelayCommand : ICommand
     {
         private Action<object> execute;
         private Func<object, bool> canExecute;
@@ -14,7 +14,7 @@ namespace WarehouseMenager.MVVM
             remove { CommandManager.RequerySuggested -= value; }
         }
 
-        public ReleyCommand(Action<object> execute, Func<object, bool> canExecute = null)
+        public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
         {
             this.execute = execute;
             this.canExecute = canExecute;

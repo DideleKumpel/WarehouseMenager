@@ -10,10 +10,10 @@
         <StackPanel Orientation="Vertical">
             <Label Width="113" FontSize="32" HorizontalAlignment="Center" Margin="0,0,0,10">Log in</Label>
             <Label Width="130" FontSize="12">Username</Label>
-            <TextBox Width="130"></TextBox>
-            <Label Width="130" FontSize="12">Password</Label>
-            <PasswordBox Width="130" Margin="0,0,0,20"></PasswordBox>
-            <Button Width="75">Log in</Button>
+            <TextBox Width="130" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            <Label Width="130" FontSize="12" >Password</Label>
+            <PasswordBox Width="130" Margin="0,0,0,20" PasswordChanged="PasswordBox_PasswordChanged"></PasswordBox>
+            <Button Width="75" Command="{Binding LoginCommand}">Log in</Button>
         </StackPanel>
     </Grid>
 </UserControl>
