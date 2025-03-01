@@ -4,8 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WarehouseMenager.View"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             mc:Ignorable="d" Height="650" Width="1200">
     <Grid Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition  Width="70*"/>
@@ -21,25 +20,29 @@
             <Button Width="100" Height="50" Margin="10" Name="BtnRefresh" Command="{Binding DoneCommand}" >Refresh</Button>
         </StackPanel>
         <DataGrid Grid.Row="1" Margin="10" 
-              ItemsSource="{Binding Items}"
-              SelectedItem="{Binding SelectedItem}"
+              ItemsSource="{Binding Tasks}"
+              SelectedItem="{Binding SelectedTask}"
               CanUserAddRows="False" CanUserDeleteRows="False"
               AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Taks" Binding="{Binding Task}" Width="20*"/>
-                <DataGridTextColumn Header="Ramp" Binding="{Binding Ramp}" Width="20*"/>
-                <DataGridTextColumn Header="Location" Binding="{Binding Location}" Width="20*"/>
-                <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="20*"/>
-                <DataGridCheckBoxColumn Header="Status" Binding="{Binding Status}" Width="20*"/>
+                <DataGridTextColumn Header="Taks" Binding="{Binding Type}" Width="6*"/>
+                <DataGridTextColumn Header="Barcode" Binding="{Binding Product.Barcode}" Width="20*"/>
+                <DataGridTextColumn Header="Ramp" Binding="{Binding Ramp.Name}" Width="6*"/>
+                <DataGridTextColumn Header="Shelf" Binding="{Binding Location.Shelf}" Width="6*"/>
+                <DataGridTextColumn Header="Row" Binding="{Binding Location.Row}" Width="6*"/>
+                <DataGridTextColumn Header="Level" Binding="{Binding Location.Level}" Width="6*"/>
+                <DataGridTextColumn Header="Uppload Date" Binding="{Binding UploadDate}" Width="20*"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="6*"/>
+                <DataGridTextColumn Header="Assigned employee" Binding="{Binding AssingedEmployeeDisplay}" Width="24*"/>
             </DataGrid.Columns>
         </DataGrid>
 
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="10">
             <StackPanel Orientation="Vertical" >
-                <Label>Welcome:</Label>
-                <Label Content="*username*"/>
+                <Label FontSize="24">Welcome:</Label>
+                <Label FontSize="24" Width="200"  Content="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
-            <Button Height="40" Width="70" Margin="50,0,0,0">Log out</Button>
+            <Button Height="60" Width="90" Margin="30,0,0,0">Log out</Button>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="1" Margin="10">

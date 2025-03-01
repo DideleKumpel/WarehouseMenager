@@ -53,6 +53,5 @@ namespace WarehouseMenager.Service
             }
             return null;
         }
-
     }
 }

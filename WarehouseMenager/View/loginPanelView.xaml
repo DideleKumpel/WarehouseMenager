@@ -5,15 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WarehouseMenager.View"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="650" d:DesignWidth="1200">
     <Grid Background="White">
-        <StackPanel Orientation="Vertical">
-            <Label Width="113" FontSize="32" HorizontalAlignment="Center" Margin="0,0,0,10">Log in</Label>
-            <Label Width="130" FontSize="12">Username</Label>
-            <TextBox Width="130" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-            <Label Width="130" FontSize="12" >Password</Label>
-            <PasswordBox Width="130" Margin="0,0,0,20" PasswordChanged="PasswordBox_PasswordChanged"></PasswordBox>
-            <Button Width="75" Command="{Binding LoginCommand}">Log in</Button>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Height="350">
+            <Label Width="250" FontSize="64" HorizontalAlignment="Center" Margin="0,0,0,10">Log in</Label>
+            <Label Width="250" FontSize="24">Username</Label>
+            <TextBox Width="250" FontSize="24" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            <Label Width="250" FontSize="24" >Password</Label>
+            <PasswordBox Width="250" FontSize="24" Margin="0,0,0,20" PasswordChanged="PasswordBox_PasswordChanged"></PasswordBox>
+            <Button Width="100" Height="50" Command="{Binding LoginCommand}">Log in</Button>
         </StackPanel>
     </Grid>
 </UserControl>

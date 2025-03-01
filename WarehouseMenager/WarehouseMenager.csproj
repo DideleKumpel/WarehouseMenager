@@ -107,13 +107,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\employeeModel.cs" />
     <Compile Include="Model\locationModel.cs" />
     <Compile Include="Model\productModel.cs" />
+    <Compile Include="Model\rampModel.cs" />
     <Compile Include="Model\taskModel.cs" />
     <Compile Include="Model\userModel.cs" />
+    <Compile Include="MVVM\Mediator.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
     <Compile Include="Service\locationsServise.cs" />
+    <Compile Include="Service\taskService.cs" />
     <Compile Include="Service\userService.cs" />
     <Compile Include="ViewModel\loginPanelViewModel.cs" />
     <Compile Include="ViewModel\menagerPanelViewModel.cs" />

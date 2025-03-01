@@ -12,12 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WarehouseMenager.ViewModel;
 
 namespace WarehouseMenager.View
 {
-    /// <summary>
-    /// Logika interakcji dla klasy menagerPanelView.xaml
-    /// </summary>
+   
     public partial class menagerPanelView : UserControl
     {
         public menagerPanelView()

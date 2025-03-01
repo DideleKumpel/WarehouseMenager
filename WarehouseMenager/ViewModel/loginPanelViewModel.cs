@@ -44,14 +44,17 @@ namespace WarehouseMenager.ViewModel
                 return;
             }
 
-            // Przejście do odpowiedniego widoku na podstawie roli
+            // Switch to the right view based on the role
             if (user.Role == "operator")
             {
                 Application.Current.MainWindow.DataContext = new operatorPanelViewModel();
             }
-            else if (user.Role == "menager")
+            else if (user.Role == "manager")
             {
-                Application.Current.MainWindow.DataContext = new menagerPanelViewModel();
+                menagerPanelViewModel viewModel = new menagerPanelViewModel();
+                Application.Current.MainWindow.DataContext = viewModel;
+                Mediator.NotifyViewModel1FullNameChanged(user);
+                viewModel.RefreshData();   //loads tasks, products, ramps, locations data from databese
             }
             else
             {
