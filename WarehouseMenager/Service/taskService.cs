@@ -80,7 +80,6 @@ namespace WarehouseMenager.Service
                 }
                 catch (Exception NoConnetion)
                 {
-                    MessageBox.Show("No connetion", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     throw;
                 }
             }

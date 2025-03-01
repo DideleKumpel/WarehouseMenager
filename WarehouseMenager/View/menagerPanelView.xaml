@@ -15,14 +15,22 @@
             <RowDefinition Height="78*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10">
-            <Button Width="100" Height="50" Margin="10" Name="BtnDdd" Command="{Binding AddCommand}" >Add</Button>
-            <Button Width="100" Height="50" Margin="10" Name="BtnDelete" Command="{Binding DeleteCommand}" >Delete</Button>
+            <StackPanel Margin="0,0,20,0">
+                <Label FontSize="24">You are current in:</Label>
+                <Label FontSize="24">TASK MENAGER</Label>
+            </StackPanel>
+            <Button Width="100" Height="50" Margin="10" Name="BtnProductMenagerView"  Command="{Binding SwitchPorductMengerView}" >
+                <TextBlock Padding="3,3,3,3" TextWrapping="Wrap" TextAlignment="Center" Text="Swich to product menager" />
+            </Button>
+            <Button Width="100" Height="50" Margin="10" Name="BtnOperatorView"  Command="{Binding SwitchOperatorPanelView}" >
+                <TextBlock Padding="3,3,3,3" TextWrapping="Wrap" TextAlignment="Center" Text="Swich to operator panel" />
+            </Button>
             <Button Width="100" Height="50" Margin="10" Name="BtnRefresh" Command="{Binding DoneCommand}" >Refresh</Button>
         </StackPanel>
         <DataGrid Grid.Row="1" Margin="10" 
               ItemsSource="{Binding Tasks}"
               SelectedItem="{Binding SelectedTask}"
-              CanUserAddRows="False" CanUserDeleteRows="False"
+              CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True"
               AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Taks" Binding="{Binding Type}" Width="6*"/>
@@ -40,24 +48,31 @@
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="10">
             <StackPanel Orientation="Vertical" >
                 <Label FontSize="24">Welcome:</Label>
-                <Label FontSize="24" Width="200"  Content="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label FontSize="24" Width="200">
+                    <TextBlock Padding="3,3,3,3" TextWrapping="Wrap" TextAlignment="Center" Text="{Binding UsernameDisplay, UpdateSourceTrigger=PropertyChanged}" />
+                </Label>
             </StackPanel>
             <Button Height="60" Width="90" Margin="30,0,0,0">Log out</Button>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="1" Margin="10">
             <Label>Number of free spaces in warhouse:</Label>
-            <Label Content="*nuber*"/>
+            <Label Content="{Binding FreeSpaceInWarehouseDisplay, UpdateSourceTrigger=PropertyChanged}"/>
             <Label Content="Task: "/>
-            <ComboBox  Margin="5,0,5,10" />
+            <StackPanel Orientation="Horizontal">
+                <RadioButton Margin="15,0,15,0">Load</RadioButton>
+                <RadioButton>Unload</RadioButton>
+            </StackPanel>
             <Label Content="Ramp: "/>
-            <TextBox  Margin="5,0,5,10" Text="{Binding SelectedItem.Place, UpdateSourceTrigger=PropertyChanged}" />
+            <ComboBox  Margin="5,0,5,10" />
             <Label Content="Product: "/>
             <ComboBox  Margin="5,0,5,10" />
-            <Label Content="Date: "/>
-            <DatePicker Margin="5,0,5,10" SelectedDate="{Binding SelectedItem.Date, UpdateSourceTrigger=PropertyChanged}" />
             <Label Content="Amount: "/>
             <TextBox  Margin="5,0,5,10" Text="number" />
+            <StackPanel Orientation="Horizontal">
+                <Button Width="100" Height="50" Margin="10" Name="BtnDdd" Command="{Binding AddCommand}" >Add</Button>
+                <Button Width="100" Height="50" Margin="10" Name="BtnDelete" Command="{Binding DeleteCommand}" >Delete</Button>
+            </StackPanel>
         </StackPanel>
     </Grid>
 

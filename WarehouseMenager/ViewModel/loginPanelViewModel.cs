@@ -54,7 +54,7 @@ namespace WarehouseMenager.ViewModel
                 menagerPanelViewModel viewModel = new menagerPanelViewModel();
                 Application.Current.MainWindow.DataContext = viewModel;
                 Mediator.NotifyViewModel1FullNameChanged(user);
-                viewModel.RefreshData();   //loads tasks, products, ramps, locations data from databese
+                viewModel.RefreshDataAsync();   //loads tasks, products, ramps, locations data from databese
             }
             else
             {

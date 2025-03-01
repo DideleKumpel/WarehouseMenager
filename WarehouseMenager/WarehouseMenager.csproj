@@ -117,6 +117,8 @@
     <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
     <Compile Include="Service\locationsServise.cs" />
+    <Compile Include="Service\productService.cs" />
+    <Compile Include="Service\rampService.cs" />
     <Compile Include="Service\taskService.cs" />
     <Compile Include="Service\userService.cs" />
     <Compile Include="ViewModel\loginPanelViewModel.cs" />
