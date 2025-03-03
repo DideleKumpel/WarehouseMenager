@@ -13,7 +13,7 @@ namespace WarehouseMenager.Service
     class rampService
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WarehouseDb"].ConnectionString;
-        public async Task<List<rampModel>> LoadRampsAsync()
+        public async Task<ObservableCollection<rampModel>> LoadRampsAsync()
         {
             using (var connetion = new MySqlConnection(_connectionString))
             {
@@ -25,7 +25,7 @@ namespace WarehouseMenager.Service
                     {
                         using (var reader = await command.ExecuteReaderAsync())
                         {
-                            List<rampModel> rampList = new List<rampModel> { };
+                            ObservableCollection<rampModel> rampList = new ObservableCollection<rampModel> { };
                             while (await reader.ReadAsync())
                             {
                                 rampModel ramp = new rampModel

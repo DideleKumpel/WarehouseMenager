@@ -23,5 +23,11 @@ namespace WarehouseMenager.View
         {
             InitializeComponent();
         }
+
+        public void IsNumber(object sender, TextCompositionEventArgs e) //method for preventing input not a number in textbox for task amount input
+        {
+            e.Handled = !e.Text.All(cc => Char.IsNumber(cc));
+            base.OnPreviewTextInput(e);
+        }
     }
 }
