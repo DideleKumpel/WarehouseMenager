@@ -113,6 +113,7 @@
     <Compile Include="Model\rampModel.cs" />
     <Compile Include="Model\taskModel.cs" />
     <Compile Include="Model\userModel.cs" />
+    <Compile Include="MVVM\AsyncRelayCommand.cs" />
     <Compile Include="MVVM\Mediator.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />

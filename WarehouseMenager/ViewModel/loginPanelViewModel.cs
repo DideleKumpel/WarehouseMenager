@@ -10,6 +10,7 @@ using System.Windows;
 using WarehouseMenager.MVVM;
 using WarehouseMenager.Service;
 using WarehouseMenager.Model;
+using System.Security.AccessControl;
 
 namespace WarehouseMenager.ViewModel
 {
@@ -20,6 +21,7 @@ namespace WarehouseMenager.ViewModel
         public string Username { get; set; }
         public string Password { get; set; }
         public ICommand LoginCommand { get; }
+        private bool LoginAsyncBusy = false;  // flag to check if LoginAsync are still working 
 
         public loginPanelViewModel()
         {
@@ -29,36 +31,48 @@ namespace WarehouseMenager.ViewModel
 
         private async Task LoginAsync()
         {
-            userModel user;
-            try
+            if (LoginAsyncBusy == true)
             {
-                user = await _userService.LoginAsync(Username, Password);
-            }
-            catch (Exception NoConnetion) {
-                return;     
-            }
-
-            if (user == null)
-            {
-                MessageBox.Show("Invalid username or password.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            // Switch to the right view based on the role
-            if (user.Role == "operator")
-            {
-                Application.Current.MainWindow.DataContext = new operatorPanelViewModel();
-            }
-            else if (user.Role == "manager")
-            {
-                menagerPanelViewModel viewModel = new menagerPanelViewModel();
-                Application.Current.MainWindow.DataContext = viewModel;
-                Mediator.NotifyViewModel1FullNameChanged(user);
-                viewModel.RefreshDataAsync();   //loads tasks, products, ramps, locations data from databese
+                MessageBox.Show("You are logging in.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
             {
-                MessageBox.Show("Unknown role.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                LoginAsyncBusy = true; //put flag up so you cant run more than 1 LoginAsync() at same time
+                userModel user;
+                try
+                {
+                    user = await _userService.LoginAsync(Username, Password);
+                }
+                catch (Exception NoConnetion)
+                {
+                    LoginAsyncBusy=false; //put flog down
+                    return;
+                }
+
+                if (user == null)
+                {
+                    MessageBox.Show("Invalid username or password.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    LoginAsyncBusy = false;  //put flog down
+                    return;
+                }
+
+                // Switch to the right view based on the role
+                if (user.Role == "operator")
+                {
+                    Application.Current.MainWindow.DataContext = new operatorPanelViewModel();
+                }
+                else if (user.Role == "manager")
+                {
+                    menagerPanelViewModel viewModel = new menagerPanelViewModel();
+                    Application.Current.MainWindow.DataContext = viewModel;
+                    Mediator.NotifyViewModel1FullNameChanged(user);
+                    viewModel.RefreshDataAsync();   //loads tasks, products, ramps, locations data from databese
+                }
+                else
+                {
+                    MessageBox.Show("Unknown role.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                LoginAsyncBusy = false;  //put flog down
             }
         }
     }

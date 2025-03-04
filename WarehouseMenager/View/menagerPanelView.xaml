@@ -63,8 +63,8 @@
             </StackPanel>
             <Label Content="Task: "/>
             <StackPanel Orientation="Horizontal">
-                <RadioButton Margin="15,0,15,0" IsChecked="{Binding UnloadBtn}" Tag="LoadRBtn" >Load</RadioButton>
-                <RadioButton Margin="15,0,15,0" IsChecked="{Binding LoadBtn}" Tag="UnLoadRBtn" >Unload</RadioButton>
+                <RadioButton Margin="15,0,15,0" IsChecked="{Binding LoadBtn}" Tag="LoadRBtn" >Load</RadioButton>
+                <RadioButton Margin="15,0,15,0" IsChecked="{Binding UnloadBtn}" Tag="UnLoadRBtn" >Unload</RadioButton>
             </StackPanel>
             <Label Content="Ramp: "/>
             <ComboBox  Name="RampIdSelectorComboBox" Margin="5,0,5,10" SelectedItem="{Binding SelectedRamp, Mode=TwoWay}" DisplayMemberPath="Name" ItemsSource="{Binding Ramps, Mode=TwoWay}"/>

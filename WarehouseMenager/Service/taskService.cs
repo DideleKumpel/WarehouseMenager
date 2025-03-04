@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Mysqlx.Crud;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
 using WarehouseMenager.Model;
+using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
 
 namespace WarehouseMenager.Service
 {
@@ -85,9 +87,33 @@ namespace WarehouseMenager.Service
                 }
             }
         }
-        public async void AddTaskAsync(taskModel task)
+        public async Task<bool> InsertTaskAsync(string Type, string Ramp, string Product, int LocationID)
         {
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = "INSERT INTO tasks(type, status, upload_dateTime, finish_dateTime, ramp_name, worker_worker_id, locations_locations_id, products_products_id) " +
+                        "VALUES(@Type, 'toDo', NOW(), NULL, @Ramp, NULL, @Location, @Product);";
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Type", Type);
+                        command.Parameters.AddWithValue("@Ramp", Ramp);
+                        command.Parameters.AddWithValue("@Product", Product);
+                        command.Parameters.AddWithValue("@Location", LocationID);
 
+                        int rowsAffected = await command.ExecuteNonQueryAsync(); //Execute insert and return number of rows affected
+
+                        return rowsAffected > 0; //if more then 0 rows were affected return true
+                    }
+                }
+                catch (Exception NoConnection)
+                {
+                    Console.WriteLine("Error instering data do DB: " + NoConnection.Message);
+                    return false;
+                }
+            }
         }
         public async void DeleteTaskAsync(taskModel task)
         {
