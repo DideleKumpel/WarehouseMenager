@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace WarehouseMenager.Service
     internal class userService
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WarehouseDb"].ConnectionString;
-        
+
         public async Task<userModel> LoginAsync(string username, string password)
         {
             using (var connection = new MySqlConnection(_connectionString))
