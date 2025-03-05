@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WarehouseMenager.Model
 {
-    class employeeModel
+    public class employeeModel
     {
         public int Id { get; set; }
         public String Name { get; set; }

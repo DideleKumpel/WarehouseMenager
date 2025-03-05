@@ -2,7 +2,7 @@
 
 namespace WarehouseMenager.Model
 {
-    internal class taskModel
+    public class taskModel
     {
         public int Id { get; set; }
         public string Type { get; set; }

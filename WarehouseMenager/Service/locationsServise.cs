@@ -89,7 +89,7 @@ namespace WarehouseMenager.Service
             }
         }
 
-        public async Task<bool> FillLocationAsync(int LoactionId, string Barcode)
+        public async Task<bool> FillLocationAsync(int LocationId, string Barcode)
         {
             using (var connetion = new MySqlConnection(_connectionString))
             {
@@ -100,7 +100,7 @@ namespace WarehouseMenager.Service
                     using (var command = new MySqlCommand(query, connetion))
                     {
                         command.Parameters.AddWithValue("@Barcode", Barcode);
-                        command.Parameters.AddWithValue("@LocationId", LoactionId);
+                        command.Parameters.AddWithValue("@LocationId", LocationId);
 
                         int rowsAffected = await command.ExecuteNonQueryAsync(); //Execute update and return number of rows affected
 
@@ -116,9 +116,31 @@ namespace WarehouseMenager.Service
 
             }
         }
-        //public async Task<bool> ReleaseLocation(int LocationId)
-        //{
-            
-        //}
+        public async Task<bool> ReleaseLocation(int LocationId)
+        {
+            using (var connetion = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connetion.OpenAsync();
+                    string query = "UPDATE locations SET products_products_id = NULL WHERE locations_id = @LocationId ;";
+                    using (var command = new MySqlCommand(query, connetion))
+                    {
+                        command.Parameters.AddWithValue("@LocationId", LocationId);
+
+                        int rowsAffected = await command.ExecuteNonQueryAsync(); //Execute update and return number of rows affected
+
+                        return rowsAffected > 0; //if more then 0 rows were affected return true
+
+                    }
+                }
+                catch (Exception NoConnection)
+                {
+                    Console.WriteLine("Error updating data do DB: " + NoConnection.Message);
+                    return false;
+                }
+
+            }
+        }
     }
 }

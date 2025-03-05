@@ -14,7 +14,7 @@ using System.Security.AccessControl;
 
 namespace WarehouseMenager.ViewModel
 {
-    internal class loginPanelViewModel: ViewModelBase
+    public class loginPanelViewModel: ViewModelBase
     {
         private readonly userService _userService;
 

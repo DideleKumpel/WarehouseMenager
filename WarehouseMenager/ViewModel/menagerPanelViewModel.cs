@@ -14,34 +14,34 @@ using System.Windows.Input;
 using WarehouseMenager.Model;
 using WarehouseMenager.MVVM;
 using WarehouseMenager.Service;
-using WarehouseMenager.View;
+using WarehouseMenager.View.Dialogs;
 
 namespace WarehouseMenager.ViewModel
 {
-    internal class menagerPanelViewModel: ViewModelBase
+    public class menagerPanelViewModel: ViewModelBase
     {
         public userModel User;
+
         //SERVICE METHODS FOR DB CONECTION
         private readonly taskService _taskService;
         private readonly locationsServise _locationsServise;
         private readonly rampService _rampService;
         private readonly productService _productService;
         private readonly userService _userService;
+
         //DISPLAY AND DB DATA VARIABULES
         public ObservableCollection<taskModel> Tasks { get; set; }
         public ObservableCollection<productModel> Products { get; set; }
         public ObservableCollection<rampModel> Ramps { get; set; }
 
-        private ObservableCollection<taskModel> _selectedTasks;
+        private ObservableCollection<taskModel> _selectedTasks = new ObservableCollection<taskModel>();
         public ObservableCollection<taskModel> SelectedTasks
         {
-            get { return _selectedTasks; }
+            get {
+                return _selectedTasks; }
             set
             {
                 _selectedTasks = value;
-                OnPropertChanged(nameof(SelectedTasks));
-                OnDataForAddTaskChagned();
-                Console.WriteLine("Task selected " + _selectedTasks[0].Id + " ");
             }
         }
 
@@ -54,7 +54,10 @@ namespace WarehouseMenager.ViewModel
                 _selectedRamp = value;
                 OnPropertChanged(nameof(SelectedRamp));
                 OnDataForAddTaskChagned();
-                Console.WriteLine("Ramp seleted " + _selectedRamp.Name);
+                if (_selectedRamp != null)
+                {
+                    Console.WriteLine("Ramp seleted " + _selectedRamp.Name);
+                }
             }
         }
 
@@ -67,7 +70,10 @@ namespace WarehouseMenager.ViewModel
                 _selectedProduct = value;
                 OnPropertChanged(nameof(SelectedProduct));
                 OnDataForAddTaskChagned();
-                Console.WriteLine("Product selected " + _selectedProduct.Barcode);
+                if (_selectedProduct != null)
+                {
+                    Console.WriteLine("Product selected " + _selectedProduct.Barcode);
+                }
             }
         }
 
@@ -121,19 +127,19 @@ namespace WarehouseMenager.ViewModel
         private int AllSpacesInWarehouse;
         public string SpaceRatioInWarehouseDisplay { get; set; }
         public double FillnesProcentage { get; set; }
+
         //BUTTONS
-        public ICommand LoginOutCommand { get; }
+        public ICommand LogOutCommand => new RelayCommand(execute => LogOut());
         public AsyncRelayCommand AddCommand { get; } 
-        public ICommand DeleteCommand { get; }
+        public AsyncRelayCommand DeleteCommand { get; }
         public ICommand RefreshCommand => new RelayCommand(execute => RefreshDataAsync());
         public ICommand SwitchPorductMengerView { get; }
         public ICommand SwitchOperatorPanelView { get; }
+
         //FLAGS FOR BTN SO ONLY 1 CAN RUN IN THE SAME TIME
         private bool AddTaskAsyncBusy = false;
-        private bool DeleteTasAsynckBusy = false;
-        private bool RefreshTaskAsyncBusy = false;
-        private bool SwitchPorductMengerViewBusy = false;
-        private bool SwitchOperatorPanelViewBusy = false;
+        private bool DeleteTaskAsyncBusy = false;
+
 
         public menagerPanelViewModel() {
             Mediator.UserDataPass += UserDataTransfer; //add fuction to event 
@@ -143,6 +149,7 @@ namespace WarehouseMenager.ViewModel
             _productService = new productService();
             _userService = new userService();
             AddCommand = new AsyncRelayCommand(async () => await AddTasksAsync(), () => AddTaskInputFilled());
+            DeleteCommand = new AsyncRelayCommand(async () => await DeleteTaskAsync(), () => TaskIsSelected());
         }
         private void UserDataTransfer(userModel userData) //method to save user data from loginPanel and verificate it with DB
         {
@@ -155,6 +162,11 @@ namespace WarehouseMenager.ViewModel
             try
             {
                 this.User = await _userService.LoginAsync(User.Username, User.Password);
+                if (this.User.Role != "manager")
+                {
+                    MessageBox.Show("Invalid role. Loging out", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    LogOut();
+                }
             }
             catch (Exception NoConnect)
             {
@@ -162,6 +174,7 @@ namespace WarehouseMenager.ViewModel
                 LogOut();
             }
         }
+
         // METHODS TO LOAD DATA FROM DB
         public async void RefreshDataAsync() //refresh and download new data
         {
@@ -209,6 +222,7 @@ namespace WarehouseMenager.ViewModel
                 LogOut();
             }
         }
+
         // METHODS FOR ADDING TASKS
         private async Task AddTasksAsync()
         {
@@ -218,71 +232,70 @@ namespace WarehouseMenager.ViewModel
                 return;
             }
       
-             AddTaskAsyncBusy = true;
-             await VerifyUser();   //verification of user before adding task
-                string TaskType;
-                if (_loadBtn == true)
-                {
-                    TaskType = "load";
-                }
-                else
-                {
-                    TaskType = "unload";
-                }
+            AddTaskAsyncBusy = true;
+            await VerifyUser();   //verification of user before adding task
+            string TaskType;
+            if (_loadBtn == true)
+            {
+                TaskType = "load";
+            }
+            else
+            {
+                TaskType = "unload";
+            }
+            //open messebox with confrmtaion of acction
+            MessageBoxResult result = MessageBox.Show(
+               $"Task:" + " Type-"+ TaskType + " Ramp-" + _selectedRamp.Name + " Product-" + _selectedProduct.Barcode + " \nAre you sure you want to add " + this._amountInput + " tasks?",
+               "Confirm Task Addition",
+               MessageBoxButton.YesNo,
+               MessageBoxImage.Question);
 
-                MessageBoxResult result = MessageBox.Show(
-                    $"Task:" + " Type-"+ TaskType + " Ramp-" + _selectedRamp.Name + " Product-" + _selectedProduct.Barcode + " \nAre you sure you want to add " + this._amountInput + " tasks?",
-                    "Confirm Task Addition",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
+            // If user press 'No"
+            if (result != MessageBoxResult.Yes)
+            {
+               AddTaskAsyncBusy = false;
+               return;
+            }
 
-                // Jeśli użytkownik kliknie "No", zakończ metodę
-                if (result != MessageBoxResult.Yes)
+            await CountFreeWarehousesSpaces();  //update number off free spaces in warehouse
+            if (this._amountInput <= this.FreeSpacesInWarehous) //check if in warehouse is enough space
+            {
+                List<int> EmptySpaces = await _locationsServise.XIdsOfEmptySpacesAsync(this._amountInput); //get list of empty spaces
+                int AmmountOfErrors = 0;
+                foreach (int space in EmptySpaces)
                 {
-                    AddTaskAsyncBusy = false;
-                    return;
-                }
-
-                await CountFreeWarehousesSpaces();  //update number off free spaces in warehouse
-                if (this._amountInput <= this.FreeSpacesInWarehous) //check if in warehouse is enough space
-                {
-                    List<int> EmptySpaces = await _locationsServise.XIdsOfEmptySpacesAsync(this._amountInput); //get list of empty spaces
-                    int AmmountOfErrors = 0;
-                    foreach (int space in EmptySpaces)
+                     bool TaskInsertSucces = await _taskService.InsertTaskAsync(TaskType, _selectedRamp.Name, _selectedProduct.Barcode, space); //add task to DB
+                     //zupdatuj zeby lokalizacej sie tez aktualizowaly
+                    if (TaskInsertSucces == false)
                     {
-                        bool TaskInsertSucces = await _taskService.InsertTaskAsync(TaskType, _selectedRamp.Name, _selectedProduct.Barcode, space); //add task to DB
-                        //zupdatuj zeby lokalizacej sie tez aktualizowaly
-                        if (TaskInsertSucces == false)
+                        AmmountOfErrors++;
+                        Console.WriteLine("Error adding task to DB. Task-" + TaskType + " " + _selectedRamp.Name + " " + _selectedProduct.Barcode + " " + space);
+                    }
+                    if (TaskType == "unload")
+                    {
+                        bool LocationUpdateSucces = await _locationsServise.FillLocationAsync(space, _selectedProduct.Barcode);
+                        if (LocationUpdateSucces == false)
                         {
                             AmmountOfErrors++;
-                            Console.WriteLine("Error adding task to DB. Task-" + TaskType + " " + _selectedRamp.Name + " " + _selectedProduct.Barcode + " " + space);
-                        }
-                        if (TaskType == "Unload")
-                        {
-                            bool LocationUpdateSucces = await _locationsServise.FillLocationAsync(space, _selectedProduct.Barcode);
-                            if (LocationUpdateSucces == false)
-                            {
-                                AmmountOfErrors++;
-                                Console.WriteLine("Error updating to DB. Location-" + space);
-                            }
+                            Console.WriteLine("Error updating to DB. Location-" + space);
                         }
                     }
-                    if (AmmountOfErrors > 0)
-                    {
+                }
+                if (AmmountOfErrors > 0) //If error occured
+                {
                         MessageBox.Show("Error adding tasks or updating locatn" + AmmountOfErrors + "to DB.", "Error", MessageBoxButton.OK);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Task adding complet with succes", "Info", MessageBoxButton.OK);
-                    }
                 }
                 else
                 {
-                    MessageBox.Show("No enough space in warehouse.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Task adding complet with succes", "Info", MessageBoxButton.OK);
                 }
-                RefreshDataAsync();
-                AddTaskAsyncBusy = false;
-            
+            }
+            else
+            {
+                    MessageBox.Show("No enough space in warehouse.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            RefreshDataAsync();
+            AddTaskAsyncBusy = false;         
         }
         private bool AddTaskInputFilled() //function to check is all input fields are filled with valid data
         {
@@ -310,13 +323,80 @@ namespace WarehouseMenager.ViewModel
             AddCommand.RaiseCanExecuteChanged();
         }
 
+        //METHODS FOR DELETING TASKS
         private async Task DeleteTaskAsync()
         {
-
+            if (DeleteTaskAsyncBusy == true) //onyl one delete can run in the same time
+            {
+                MessageBox.Show("You are arleady deleting tasks.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            ObservableCollection<taskModel> TasksToDelete = new ObservableCollection<taskModel>(SelectedTasks); //copy of selected tasks so user cant change it while deleting
+            foreach(taskModel task in TasksToDelete) //scaning SelectedTask for finished task u cant delete it
+            {
+                if(task.Status == "done")
+                {
+                    MessageBox.Show("You can't delete finished task.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+            DeleteTaskAsyncBusy = true; //flag up
+            
+            await VerifyUser();   //verification of user before deleting task
+            taskDeleteConfirmationDialog conformationDialog = new taskDeleteConfirmationDialog(SelectedTasks);
+            bool? result = conformationDialog.ShowDialog();
+            if (result == false) 
+            {
+                DeleteTaskAsyncBusy = false;
+                return;
+            }
+            int AmmountOfErrors = 0;
+            foreach (var task in TasksToDelete)
+            {
+                bool TaskDeleteSucces = await _taskService.DeleteTaskByIdAsync(task.Id);
+                if (TaskDeleteSucces == false)
+                {
+                    AmmountOfErrors++;
+                    Console.WriteLine("Error deleting task from DB. Task-" + task.Id);
+                }
+                if(task.Type == "unload")
+                {
+                    bool LocationUpdateSucces = await _locationsServise.FillLocationAsync(task.Location.Id, null);
+                    if (LocationUpdateSucces == false)
+                    {
+                        AmmountOfErrors++;
+                        Console.WriteLine("Error updating to DB. Location-" + task.Location.Id);
+                    }
+                }
+            }
+            if (AmmountOfErrors > 0) //If error occured
+            {
+                MessageBox.Show("Error adding tasks or updating locatn" + AmmountOfErrors + "to DB.", "Error", MessageBoxButton.OK);
+            }
+            else
+            {
+                MessageBox.Show("Task adding complet with succes", "Info", MessageBoxButton.OK);
+            }
+            RefreshDataAsync();
+            DeleteTaskAsyncBusy = false;
         }
+        private bool TaskIsSelected()
+        {
+            if (this._selectedTasks.Count > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        private void OnDataForDeleteTaskChanged()
+        {
+            DeleteCommand.RaiseCanExecuteChanged();
+        }
+
+
         private void LogOut()
         {
-
+            Application.Current.MainWindow.DataContext = new loginPanelViewModel();
         }
         private async Task CalculateLocationInfoForDisplay() //function to prepare data for display of free to all ratio and filness bar
         {

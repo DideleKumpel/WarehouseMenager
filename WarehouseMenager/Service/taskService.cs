@@ -14,7 +14,7 @@ using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
 
 namespace WarehouseMenager.Service
 {
-    class taskService
+    internal class taskService
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WarehouseDb"].ConnectionString;
         public async Task<ObservableCollection<taskModel>> LoadTaskAsync()
@@ -115,9 +115,27 @@ namespace WarehouseMenager.Service
                 }
             }
         }
-        public async void DeleteTaskAsync(taskModel task)
+        public async Task<bool> DeleteTaskByIdAsync(int TaskId)
         {
-
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = "DELETE FROM tasks WHERE tasks_id = @Id;";
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Id", TaskId);
+                        
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                        return rowsAffected > 0;
+                    }
+                }catch(Exception NoConnection)
+                {
+                    Console.WriteLine("Error deleting data from DB: " + NoConnection.Message);
+                    return false;
+                }
+            }
         }
     }
 }

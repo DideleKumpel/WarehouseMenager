@@ -11,7 +11,7 @@ using WarehouseMenager.Model;
 
 namespace WarehouseMenager.Service
 {
-    class rampService
+    internal class rampService
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WarehouseDb"].ConnectionString;
         public async Task<ObservableCollection<rampModel>> LoadRampsAsync()

@@ -25,11 +25,13 @@
             <Button Width="100" Height="50" Margin="10" Name="BtnOperatorView"  Command="{Binding SwitchOperatorPanelView}" >
                 <TextBlock Padding="3,3,3,3" TextWrapping="Wrap" TextAlignment="Center" Text="Swich to operator panel" />
             </Button>
-            <Button Width="100" Height="50" Margin="10" Name="BtnRefresh" Command="{Binding DoneCommand}" >Refresh</Button>
+            <Button Width="100" Height="50" Margin="10" Name="BtnRefresh" Command="{Binding RefreshCommand}" >Refresh</Button>
         </StackPanel>
         <DataGrid Grid.Row="1" Margin="10" 
               ItemsSource="{Binding Tasks}"
-              SelectedItem="{Binding SelectedTasks}"
+              SelectionMode="Extended"
+              SelectionUnit="FullRow"
+              SelectionChanged="DataGrid_SelectionChanged"
               CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True"
               AutoGenerateColumns="False">
             <DataGrid.Columns>
@@ -52,7 +54,7 @@
                     <TextBlock Padding="3,3,3,3" TextWrapping="Wrap" TextAlignment="Center" Text="{Binding UsernameDisplay, UpdateSourceTrigger=PropertyChanged}" />
                 </Label>
             </StackPanel>
-            <Button Height="60" Width="90" Margin="30,0,0,0">Log out</Button>
+            <Button Height="60" Width="90" Margin="30,0,0,0" Command="{Binding LogOutCommand}">Log out</Button>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="1" Margin="10">

@@ -1,7 +1,7 @@
 ﻿
 namespace WarehouseMenager.Model
 {
-    internal class productModel
+    public class productModel
     {
         public string Name { get; set; }
         public double Weight { get; set; }

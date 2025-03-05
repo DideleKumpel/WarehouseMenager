@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WarehouseMenager.ViewModel
 {
-    internal class operatorPanelViewModel
+    public class operatorPanelViewModel
     {
     }
 }

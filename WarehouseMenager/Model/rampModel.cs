@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WarehouseMenager.Model
 {
-    class rampModel
+    public class rampModel
     {
         public string Name { get; set; }
     }

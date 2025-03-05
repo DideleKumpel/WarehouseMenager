@@ -9,7 +9,7 @@ using WarehouseMenager.Model;
 namespace WarehouseMenager.MVVM
 {
     //Class to communicate between ViewModels
-    class Mediator
+    public class Mediator
     {
         public delegate void UserDataPasserEventHandler(userModel userData);
         public static event UserDataPasserEventHandler UserDataPass;

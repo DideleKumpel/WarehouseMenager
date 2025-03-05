@@ -1,7 +1,7 @@
 ﻿
 namespace WarehouseMenager.Model
 {
-    internal class locationModel
+    public class locationModel
     {
         public int Id { get; set; }
         public string Shelf { get; set; }
