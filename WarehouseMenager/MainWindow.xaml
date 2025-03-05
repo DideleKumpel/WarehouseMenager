@@ -18,6 +18,9 @@
         <DataTemplate x:Name="menagerPanelViewTemplate" DataType="{x:Type viewmodels:menagerPanelViewModel}">
             <views:menagerPanelView DataContext="{Binding}"/>
         </DataTemplate>
+        <DataTemplate x:Name="productMenagerPanelViewTemplate" DataType="{x:Type viewmodels:productMengerPanelViewModel}">
+            <views:productMengerPanelView DataContext="{Binding}"/>
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <ContentControl Content="{Binding}"/>

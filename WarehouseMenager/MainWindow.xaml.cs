@@ -12,7 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WarehouseMenager.Model;
+using WarehouseMenager.MVVM;
+using WarehouseMenager.Service;
 using WarehouseMenager.ViewModel;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace WarehouseMenager
 {
@@ -24,7 +28,15 @@ namespace WarehouseMenager
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new loginPanelViewModel();
+            //DataContext = new loginPanelViewModel();
+
+            //For testing productMEnagerView
+            userService _userService = new userService();
+            userModel user = new userModel { Name = "Mike", Lastname = "Johnson", Username = "mjohnson", Password = "secure123" };
+            productMengerPanelViewModel PMPMV = new productMengerPanelViewModel();
+            DataContext = PMPMV;
+            Mediator.NotifyViewModel1FullNameChanged(user);
+            PMPMV.RefreshDataAsync();
         }
     }
 }

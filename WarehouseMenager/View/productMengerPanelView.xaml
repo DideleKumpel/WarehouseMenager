@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="WarehouseMenager.View.productMengerPanelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WarehouseMenager.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="650" d:DesignWidth="1200">
+    <Grid Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition  Width="70*"/>
+            <ColumnDefinition Width="30*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="22*"/>
+            <RowDefinition Height="78*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10">
+            <StackPanel Margin="0,0,20,0">
+                <Label FontSize="24">You are current in:</Label>
+                <Label FontSize="24">PRODUCT MANAGER</Label>
+            </StackPanel>
+            <Button Width="100" Height="50" Margin="10" Name="BtnProductMenagerView"  Command="{Binding SwitchTaskMengerView}" >
+                <TextBlock Padding="3,3,3,3" TextWrapping="Wrap" TextAlignment="Center" Text="Swich to task manager" />
+            </Button>
+            <Button Width="100" Height="50" Margin="10" Name="BtnOperatorView"  Command="{Binding SwitchOperatorPanelView}" >
+                <TextBlock Padding="3,3,3,3" TextWrapping="Wrap" TextAlignment="Center" Text="Swich to operator panel" />
+            </Button>
+            <Button Width="100" Height="50" Margin="10" Name="BtnRefresh" Command="{Binding RefreshCommand}" >Refresh</Button>
+        </StackPanel>
+        <DataGrid Grid.Row="1" Margin="10" 
+          ItemsSource="{Binding Products}"
+          SelectionMode="Extended"
+          SelectionUnit="FullRow"
+          SelectionChanged="DataGrid_SelectionChanged"
+          CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True"
+          AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="15*"/>
+                <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" Width="8*"/>
+                <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="15*"/>
+                <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" Width="20*"/>
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="32*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="10">
+            <StackPanel Orientation="Vertical" >
+                <Label FontSize="24">Welcome:</Label>
+                <Label FontSize="24" Width="200">
+                    <TextBlock Padding="3,3,3,3" TextWrapping="Wrap" TextAlignment="Center" Text="{Binding UsernameDisplay, UpdateSourceTrigger=PropertyChanged}" />
+                </Label>
+            </StackPanel>
+            <Button Height="60" Width="90" Margin="30,0,0,0" Command="{Binding LogOutCommand}">Log out</Button>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10">
+            <StackPanel Orientation="Horizontal">
+                <Label>Number of existing products: </Label>
+                <Label Margin="0,0,0,5" Content="NUM"/>
+            </StackPanel>
+            <Label Content="Name: "/>
+            <TextBox  Margin="5,0,5,10" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
+            <Label Content="Weight: "/>
+            <TextBox  Margin="5,0,5,10" PreviewTextInput="IsNumber" Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged}" MaxLength="6"/>
+            <Label Content="Category: "/>
+            <TextBox  Margin="5,0,5,10" Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
+            <Label Content="Barcode: "/>
+            <TextBox  Margin="5,0,5,10" Text="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+            <Label Content="Description: "/>
+            <TextBox Height="130" Margin="5,0,5,10" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalScrollBarVisibility="Disabled" MaxLength="350"/>
+
+            <StackPanel Orientation="Horizontal">
+                <Button Width="100" Height="50" Margin="10" Name="BtnDdd" Command="{Binding AddCommand}" >Add</Button>
+                <Button Width="100" Height="50" Margin="10" Name="BtnDelete" Command="{Binding DeleteCommand}" >Delete</Button>
+                <Button Width="100" Height="50" Margin="10" Name="BtnEdit" Command="{Binding EditCommand}" >Edit</Button>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -133,14 +133,14 @@ namespace WarehouseMenager.ViewModel
         public AsyncRelayCommand AddCommand { get; } 
         public AsyncRelayCommand DeleteCommand { get; }
         public ICommand RefreshCommand => new RelayCommand(execute => RefreshDataAsync());
-        public ICommand SwitchPorductMengerView { get; }
-        public ICommand SwitchOperatorPanelView { get; }
+        public ICommand SwitchPorductMengerView => new RelayCommand(execute => SwitchViewToProductMenagerPanel());
+        public ICommand SwitchOperatorPanelView => new RelayCommand(execute => SwitchViewToOperatorPanel());
 
         //FLAGS FOR BTN SO ONLY 1 CAN RUN IN THE SAME TIME
         private bool AddTaskAsyncBusy = false;
         private bool DeleteTaskAsyncBusy = false;
 
-
+        //CONSTUCTOR
         public menagerPanelViewModel() {
             Mediator.UserDataPass += UserDataTransfer; //add fuction to event 
             _taskService = new taskService();
@@ -151,6 +151,8 @@ namespace WarehouseMenager.ViewModel
             AddCommand = new AsyncRelayCommand(async () => await AddTasksAsync(), () => AddTaskInputFilled());
             DeleteCommand = new AsyncRelayCommand(async () => await DeleteTaskAsync(), () => TaskIsSelected());
         }
+
+        //USER DATA AND VERIFICATION
         private void UserDataTransfer(userModel userData) //method to save user data from loginPanel and verificate it with DB
         {
             this.User = userData;
@@ -265,7 +267,7 @@ namespace WarehouseMenager.ViewModel
                 foreach (int space in EmptySpaces)
                 {
                      bool TaskInsertSucces = await _taskService.InsertTaskAsync(TaskType, _selectedRamp.Name, _selectedProduct.Barcode, space); //add task to DB
-                     //zupdatuj zeby lokalizacej sie tez aktualizowaly
+
                     if (TaskInsertSucces == false)
                     {
                         AmmountOfErrors++;
@@ -393,11 +395,20 @@ namespace WarehouseMenager.ViewModel
             DeleteCommand.RaiseCanExecuteChanged();
         }
 
-
+        //OTHER METODS
         private void LogOut()
         {
             Application.Current.MainWindow.DataContext = new loginPanelViewModel();
         }
+        private void SwitchViewToOperatorPanel()
+        {
+            Application.Current.MainWindow.DataContext = new operatorPanelViewModel();
+        }
+        private void SwitchViewToProductMenagerPanel()
+        {
+            Application.Current.MainWindow.DataContext = new productMengerPanelViewModel();
+        }
+
         private async Task CalculateLocationInfoForDisplay() //function to prepare data for display of free to all ratio and filness bar
         {
             await CountFreeWarehousesSpaces();

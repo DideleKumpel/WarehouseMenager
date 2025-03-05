@@ -17,7 +17,7 @@
         <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10">
             <StackPanel Margin="0,0,20,0">
                 <Label FontSize="24">You are current in:</Label>
-                <Label FontSize="24">TASK MENAGER</Label>
+                <Label FontSize="24">TASK MANAGER</Label>
             </StackPanel>
             <Button Width="100" Height="50" Margin="10" Name="BtnProductMenagerView"  Command="{Binding SwitchPorductMengerView}" >
                 <TextBlock Padding="3,3,3,3" TextWrapping="Wrap" TextAlignment="Center" Text="Swich to product menager" />
@@ -73,7 +73,7 @@
             <Label Content="Product: "/>
             <ComboBox  Margin="5,0,5,10" Name="ProductIdSelectorComboBox" SelectedItem="{Binding SelectedProduct, Mode=TwoWay}" DisplayMemberPath="Barcode" ItemsSource="{Binding Products, Mode=TwoWay}"/>
             <Label Content="Amount: "/>
-            <TextBox  Margin="5,0,5,10" PreviewTextInput="IsNumber" Text="{Binding AmountInput}"/>
+            <TextBox  Margin="5,0,5,10" PreviewTextInput="IsNumber" Text="{Binding AmountInput}" MaxLength="3"/>
             <StackPanel Orientation="Horizontal">
                 <Button Width="100" Height="50" Margin="10" Name="BtnDdd" Command="{Binding AddCommand}" >Add</Button>
                 <Button Width="100" Height="50" Margin="10" Name="BtnDelete" Command="{Binding DeleteCommand}" >Delete</Button>

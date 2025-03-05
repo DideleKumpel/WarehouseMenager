@@ -3,10 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
+using System.IO.Packaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WarehouseMenager.Model;
+using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
 
 namespace WarehouseMenager.Service
 {
@@ -45,6 +47,95 @@ namespace WarehouseMenager.Service
                 catch (Exception NoConnection)
                 {
                     throw;
+                }
+            }
+        }
+        public async Task<bool> ProductBarcodeExistAsync(string Barcode)
+        {
+            using (var connetion = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connetion.OpenAsync();
+                    string query = "SELECT COUNT(*) FROM products WHERE products_id = @Barcode;";
+                    using (var command = new MySqlCommand(query, connetion))
+                    {
+                        command.Parameters.AddWithValue("@Barcode", Barcode);
+                        object result = await command.ExecuteScalarAsync();
+                        int NumOfSpaces = Convert.ToInt32(result);
+                        bool succes = true;
+                        if (NumOfSpaces == 0)
+                        {
+                            succes = false;
+                        }
+
+                        return succes;
+                    }
+                }
+                catch (Exception NoConnection)
+                {
+                    throw;
+                }
+            }
+        }
+        public async Task<bool> ProductAlreadyExistAsync(string Name, string Category, string Description, double Weight)
+        {
+            using (var connetion = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connetion.OpenAsync();
+                    string query = "SELECT COUNT(*) FROM products WHERE productname = @Name AND weight = @Weight and category = @Category and description = @Description;";
+                    using (var command = new MySqlCommand(query, connetion))
+                    {
+                        command.Parameters.AddWithValue("@Name", Name);
+                        command.Parameters.AddWithValue("@Weight", Weight);
+                        command.Parameters.AddWithValue("@Category", Category);
+                        command.Parameters.AddWithValue("@Description", Description);
+                        object result = await command.ExecuteScalarAsync();
+                        int NumOfSpaces = Convert.ToInt32(result);
+                        bool succes = true;
+                        if (NumOfSpaces == 0)
+                        {
+                            succes = false;
+                        }
+
+                        return succes;
+                    }
+                }
+                catch (Exception NoConnection)
+                {
+                    throw;
+
+                }
+            }
+        }
+        public async Task<bool> ProductInsertAsync(string Barcode, string Name, string Category, string Description, double Weight)
+        {
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = "INSERT INTO products (productname, weight, category, products_id, description) " +
+                        "VALUES (@Name, @Weight, @Category, @Barcode, @Description)";
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Name", Name);
+                        command.Parameters.AddWithValue("@Weight", Weight);
+                        command.Parameters.AddWithValue("@Category", Category);
+                        command.Parameters.AddWithValue("@Description", Description);
+                        command.Parameters.AddWithValue("@Barcode", Barcode);
+
+                        int rowsAffected = await command.ExecuteNonQueryAsync(); //Execute insert and return number of rows affected
+
+                        return rowsAffected > 0; //if more then 0 rows were affected return true
+                    }
+                }
+                catch (Exception NoConnection)
+                {
+                    Console.WriteLine("Error instering data do DB: " + NoConnection.Message);
+                    return false;
                 }
             }
         }
