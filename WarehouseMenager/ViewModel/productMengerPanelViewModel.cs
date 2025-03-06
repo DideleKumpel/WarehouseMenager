@@ -9,6 +9,7 @@ using System.Windows.Input;
 using WarehouseMenager.Model;
 using WarehouseMenager.MVVM;
 using WarehouseMenager.Service;
+using WarehouseMenager.View.Dialogs;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace WarehouseMenager.ViewModel
@@ -49,7 +50,7 @@ namespace WarehouseMenager.ViewModel
             {
                 _name = value.ToUpper();
                 OnPropertChanged(nameof(Name));
-                OnDataForAddTaskChagned();
+                OnDataForAddProductChanged();
                 if (_name != null)
                 {
                     Console.WriteLine("Inputed name- " + _name);
@@ -65,7 +66,7 @@ namespace WarehouseMenager.ViewModel
             {
                 _weight = value.ToUpper();
                 OnPropertChanged(nameof(Weight));
-                OnDataForAddTaskChagned();
+                OnDataForAddProductChanged();
                 Console.WriteLine("Inputed weight- " + _weight);
             }
         }
@@ -77,7 +78,7 @@ namespace WarehouseMenager.ViewModel
             {
                 _category = value.ToUpper();
                 OnPropertChanged(nameof(Category));
-                OnDataForAddTaskChagned();
+                OnDataForAddProductChanged();
                 if (_category != null)
                 {
                     Console.WriteLine("Inputed category- " + _category);
@@ -93,7 +94,7 @@ namespace WarehouseMenager.ViewModel
             {
                 _barcode = value.ToUpper();
                 OnPropertChanged(nameof(Barcode));
-                OnDataForAddTaskChagned();
+                OnDataForAddProductChanged();
                 if (_barcode != null)
                 {
                     Console.WriteLine("Inputed barcode- " + _barcode);
@@ -108,7 +109,7 @@ namespace WarehouseMenager.ViewModel
             {
                 _description = value;
                 OnPropertChanged(nameof(Description));
-                OnDataForAddTaskChagned();
+                OnDataForAddProductChanged();
                 if (_description != null)
                 {
                     Console.WriteLine("Inputed description- " + _description);
@@ -129,6 +130,7 @@ namespace WarehouseMenager.ViewModel
 
         //FLAGS FOR BTN SO ONLY 1 CAN RUN IN THE SAME TIME
         private bool AddProductAsyncBusy = false;
+        private bool DeleteProductAsyncBusy = false;
 
 
 
@@ -141,6 +143,7 @@ namespace WarehouseMenager.ViewModel
             _userService = new userService();
 
             AddCommand = new AsyncRelayCommand(async () => await AddProductAsync(), () => AddProductInputFilled());
+            DeleteCommand = new AsyncRelayCommand(async () => await DeleteProductsAsync(), () => ProductsAreSeltected());
 
         }
 
@@ -292,12 +295,74 @@ namespace WarehouseMenager.ViewModel
             }
             return AllFieldFilled;
         }
-        private void OnDataForAddTaskChagned()
+        private void OnDataForAddProductChanged()
         {
             AddCommand.RaiseCanExecuteChanged();
         }
 
         // METHODS FOR DELETING PRODUCTS
+
+        private async Task DeleteProductsAsync()
+        {
+            if (DeleteProductAsyncBusy == true)
+            {
+                MessageBox.Show("You are arleady deleting product.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            await VerifyUser();
+            ObservableCollection<productModel> Products = this.SelectedProducts; 
+            DeleteProductAsyncBusy = true;
+
+            productsDeleteConfirmationDialog conformationDialog = new productsDeleteConfirmationDialog(Products);
+            bool? result = conformationDialog.ShowDialog();
+            if (result == false) 
+            {
+                DeleteProductAsyncBusy = false;
+                return;
+            }
+
+            int AmountOfErrors = 0;
+            List<string> NotDeletedBarcodes = new List<string> { };
+
+            foreach(var item in Products)
+            {
+                bool succes = await _productService.DeleteProductsAsync(item.Barcode);
+                if(succes == false)
+                {
+                    AmountOfErrors++;
+                    NotDeletedBarcodes.Add(item.Barcode);
+                }
+            }
+            if (AmountOfErrors > 0) //If error occured
+            {
+                string Message = "Not deleted products barcodes: ";
+                foreach(var item in NotDeletedBarcodes)
+                {
+                    Message += (item + ", ");
+                }
+                MessageBox.Show("Error with deleting " + AmountOfErrors  + " products. \n" + Message, "Error", MessageBoxButton.OK);
+            }
+            else
+            {
+                MessageBox.Show("Products removal was sucesful", "Info", MessageBoxButton.OK);
+            }
+            DeleteProductAsyncBusy = false;
+            RefreshDataAsync();
+
+        }
+        private bool ProductsAreSeltected()
+        {
+            if (this._selectedProducts.Count > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        private void OnDataForProductDeleteChange()
+        {
+            DeleteCommand.RaiseCanExecuteChanged();
+        }
 
 
         // METHODS FOR EDITING PRODUCTS

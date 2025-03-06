@@ -139,5 +139,29 @@ namespace WarehouseMenager.Service
                 }
             }
         }
+
+        public async Task<bool> DeleteProductsAsync(string Barcode)
+        {
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = "DELETE FROM products WHERE products_id = @Barcode;";
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Barcode", Barcode);
+
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                        return rowsAffected > 0;
+                    }
+                }
+                catch (Exception NoConnection)
+                {
+                    Console.WriteLine("Error deleting data from DB: " + NoConnection.Message);
+                    return false;
+                }
+            }
+        }
     }
 }

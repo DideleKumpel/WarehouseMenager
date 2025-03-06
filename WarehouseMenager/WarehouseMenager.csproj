@@ -128,6 +128,9 @@
     <Compile Include="ViewModel\menagerPanelViewModel.cs" />
     <Compile Include="ViewModel\operatorPanelViewModel.cs" />
     <Compile Include="ViewModel\productMengerPanelViewModel.cs" />
+    <Compile Include="View\Dialogs\productsDeleteConfirmationDialog.xaml.cs">
+      <DependentUpon>productsDeleteConfirmationDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Dialogs\taskDeleteConfirmationDialog.xaml.cs">
       <DependentUpon>taskDeleteConfirmationDialog.xaml</DependentUpon>
     </Compile>
@@ -155,6 +158,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\Dialogs\productsDeleteConfirmationDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Dialogs\taskDeleteConfirmationDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

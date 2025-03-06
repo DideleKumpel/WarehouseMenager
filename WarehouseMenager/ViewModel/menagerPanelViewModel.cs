@@ -377,7 +377,7 @@ namespace WarehouseMenager.ViewModel
             }
             else
             {
-                MessageBox.Show("Task adding complet with succes", "Info", MessageBoxButton.OK);
+                MessageBox.Show("Adding task was sucesful", "Info", MessageBoxButton.OK);
             }
             RefreshDataAsync();
             DeleteTaskAsyncBusy = false;
@@ -406,7 +406,10 @@ namespace WarehouseMenager.ViewModel
         }
         private void SwitchViewToProductMenagerPanel()
         {
-            Application.Current.MainWindow.DataContext = new productMengerPanelViewModel();
+            productMengerPanelViewModel viewModel = new productMengerPanelViewModel();
+            Application.Current.MainWindow.DataContext = viewModel;
+            Mediator.NotifyViewModel1FullNameChanged(User);
+            viewModel.RefreshDataAsync();
         }
 
         private async Task CalculateLocationInfoForDisplay() //function to prepare data for display of free to all ratio and filness bar
