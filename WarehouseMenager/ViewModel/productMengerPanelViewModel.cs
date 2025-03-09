@@ -10,6 +10,7 @@ using WarehouseMenager.Model;
 using WarehouseMenager.MVVM;
 using WarehouseMenager.Service;
 using WarehouseMenager.View.Dialogs;
+using WarehouseMenager.ViewModel.DialogViewModel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace WarehouseMenager.ViewModel
@@ -124,14 +125,14 @@ namespace WarehouseMenager.ViewModel
         public AsyncRelayCommand DeleteCommand { get; }
         public AsyncRelayCommand EditCommand { get; }
         public ICommand RefreshCommand => new RelayCommand(execute => RefreshDataAsync());
-        public ICommand SwitchPorductMengerView => new RelayCommand(execute => SwitchViewToTaskPanel());
+        public ICommand SwitchTaskMengerView => new RelayCommand(execute => SwitchViewToTaskPanel());
         public ICommand SwitchOperatorPanelView => new RelayCommand(execute => SwitchViewToOperatorPanel());
 
 
         //FLAGS FOR BTN SO ONLY 1 CAN RUN IN THE SAME TIME
         private bool AddProductAsyncBusy = false;
         private bool DeleteProductAsyncBusy = false;
-
+        private bool EditProductAsyncBusy = false;
 
 
         //CONSTURCTOR
@@ -144,6 +145,7 @@ namespace WarehouseMenager.ViewModel
 
             AddCommand = new AsyncRelayCommand(async () => await AddProductAsync(), () => AddProductInputFilled());
             DeleteCommand = new AsyncRelayCommand(async () => await DeleteProductsAsync(), () => ProductsAreSeltected());
+            EditCommand = new AsyncRelayCommand(async () => await EditProductAsync(), () => EditProductInputFilled());
 
         }
 
@@ -366,7 +368,54 @@ namespace WarehouseMenager.ViewModel
 
 
         // METHODS FOR EDITING PRODUCTS
+        private async Task EditProductAsync()
+        {
+            if (DeleteProductAsyncBusy == true)
+            {
+                MessageBox.Show("You are arleady editing product.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
+            productModel ProductToEdit = this._selectedProducts[0];
+            await VerifyUser();
+            EditProductAsyncBusy = true;
+            var editWindow = new productEditDialog();
+            var editViewModel = new productEditDialogViewModel(ProductToEdit, editWindow);
+            editWindow.DataContext = editViewModel;
+
+            bool? dialogResult = editWindow.ShowDialog();
+
+            if (dialogResult == true) // user accept changes
+            {
+                productModel updatedProduct = editViewModel.EditProduct[0];
+                bool succes = await _productService.UpdateProductAsync( ProductToEdit.Barcode, updatedProduct.Name, updatedProduct.Category, updatedProduct.Description, updatedProduct.Weight);
+                if (succes == false)
+                {
+                    MessageBox.Show("Error with updating product.", "Error", MessageBoxButton.OK);
+                }
+                else
+                {
+                    MessageBox.Show("Product update was sucesful", "Info", MessageBoxButton.OK);
+                }
+            }
+
+            RefreshDataAsync(); //refresh data
+            EditProductAsyncBusy = false; //flag down
+
+
+        }
+        private bool EditProductInputFilled()
+        {
+            if (this._selectedProducts.Count == 1)
+            {
+                return true;
+            }
+            return false;
+        }
+        private void OnDataForEditProductChanged()
+        {
+            EditCommand.RaiseCanExecuteChanged();
+        }
 
         // OTHER METHODS
         private void LogOut()
@@ -375,7 +424,10 @@ namespace WarehouseMenager.ViewModel
         }
         private void SwitchViewToTaskPanel() 
         {
-            
+            menagerPanelViewModel viewModel = new menagerPanelViewModel();
+            Application.Current.MainWindow.DataContext = viewModel;
+            Mediator.NotifyViewModel1FullNameChanged(User);
+            viewModel.RefreshDataAsync();   //loads tasks, products, ramps, locations data from databese
         }
         private void SwitchViewToOperatorPanel() 
         {

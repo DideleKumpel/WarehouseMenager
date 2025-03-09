@@ -52,6 +52,7 @@ namespace WarehouseMenager.View
                     Console.WriteLine("Removed form selected list " + removed.Barcode);
                     vm.SelectedProducts.Remove(removed);
                     vm.DeleteCommand.RaiseCanExecuteChanged();
+                    vm.EditCommand.RaiseCanExecuteChanged();
                 }
 
                 // Dodanie nowych zaznaczonych elementów
@@ -62,6 +63,7 @@ namespace WarehouseMenager.View
                         Console.WriteLine("Added to selected list " + added.Barcode);
                         vm.SelectedProducts.Add(added);
                         vm.DeleteCommand.RaiseCanExecuteChanged();
+                        vm.EditCommand.RaiseCanExecuteChanged(); 
                     }
                 }
             }

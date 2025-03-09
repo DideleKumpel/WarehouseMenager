@@ -139,7 +139,6 @@ namespace WarehouseMenager.Service
                 }
             }
         }
-
         public async Task<bool> DeleteProductsAsync(string Barcode)
         {
             using (var connection = new MySqlConnection(_connectionString))
@@ -159,6 +158,32 @@ namespace WarehouseMenager.Service
                 catch (Exception NoConnection)
                 {
                     Console.WriteLine("Error deleting data from DB: " + NoConnection.Message);
+                    return false;
+                }
+            }
+        }
+        public async Task<bool> UpdateProductAsync(string Barcode, string Name, string Category, string Description, double Weight)
+        {
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = "UPDATE products SET productname = @Name, weight = @Weight, category = @Category, description = @Description WHERE products_id = @Barcode;";
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Name", Name);
+                        command.Parameters.AddWithValue("@Weight", Weight);
+                        command.Parameters.AddWithValue("@Category", Category);
+                        command.Parameters.AddWithValue("@Description", Description);
+                        command.Parameters.AddWithValue("@Barcode", Barcode);
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                        return rowsAffected > 0;
+                    }
+                }
+                catch (Exception NoConnection)
+                {
+                    Console.WriteLine("Error updating data in DB: " + NoConnection.Message);
                     return false;
                 }
             }

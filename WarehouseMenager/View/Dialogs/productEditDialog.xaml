@@ -1,0 +1,44 @@
+﻿<Window x:Class="WarehouseMenager.View.Dialogs.productEditDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WarehouseMenager.View.Dialogs"
+        mc:Ignorable="d"
+            Title="Editing panel" Height="450" Width="800">
+    <Grid>
+        <StackPanel Margin="30">
+            <Label FontSize="32" HorizontalAlignment="Center">Editing panel</Label>
+            <Label FontSize="24">Orginal</Label>
+            <DataGrid Margin="10" Height="50"
+            ItemsSource="{Binding OrginalProduct}"
+            CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True"
+            AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="15*"/>
+                    <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" Width="8*"/>
+                    <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="15*"/>
+                    <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" Width="20*"/>
+                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="32*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Label FontSize="24">Edit data</Label>
+            <DataGrid Margin="10" Height="50" 
+            ItemsSource="{Binding EditProduct}"
+            CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="False"
+            AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="15*"/>
+                    <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" Width="8*"/>
+                    <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="15*"/>
+                    <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" Width="20*" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="32*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                <Button Width="100" Height="50" Margin="5,5,20,0" Command="{Binding CancelCommand}">Cancel</Button>
+                <Button Width="100" Height="50" Command="{Binding SaveCommand}">Cofnirm</Button>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

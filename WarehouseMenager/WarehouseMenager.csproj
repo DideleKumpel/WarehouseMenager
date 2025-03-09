@@ -124,10 +124,14 @@
     <Compile Include="Service\rampService.cs" />
     <Compile Include="Service\taskService.cs" />
     <Compile Include="Service\userService.cs" />
+    <Compile Include="ViewModel\DialogViewModel\productEditDialogViewModel.cs" />
     <Compile Include="ViewModel\loginPanelViewModel.cs" />
     <Compile Include="ViewModel\menagerPanelViewModel.cs" />
     <Compile Include="ViewModel\operatorPanelViewModel.cs" />
     <Compile Include="ViewModel\productMengerPanelViewModel.cs" />
+    <Compile Include="View\Dialogs\productEditDialog.xaml.cs">
+      <DependentUpon>productEditDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Dialogs\productsDeleteConfirmationDialog.xaml.cs">
       <DependentUpon>productsDeleteConfirmationDialog.xaml</DependentUpon>
     </Compile>
@@ -158,6 +162,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\Dialogs\productEditDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Dialogs\productsDeleteConfirmationDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
