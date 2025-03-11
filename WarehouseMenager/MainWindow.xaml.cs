@@ -30,13 +30,13 @@ namespace WarehouseMenager
             InitializeComponent();
             //DataContext = new loginPanelViewModel();
 
-            //For testing productMEnagerView
+            //For testing operatorPanel
             userService _userService = new userService();
             userModel user = new userModel { Name = "Mike", Lastname = "Johnson", Username = "mjohnson", Password = "secure123" };
-            productMengerPanelViewModel PMPMV = new productMengerPanelViewModel();
-            DataContext = PMPMV;
+            operatorPanelViewModel VM = new operatorPanelViewModel();
+            DataContext = VM;
             Mediator.NotifyViewModel1FullNameChanged(user);
-            PMPMV.RefreshDataAsync();
+            VM.RefreshDataAsync();
         }
     }
 }
