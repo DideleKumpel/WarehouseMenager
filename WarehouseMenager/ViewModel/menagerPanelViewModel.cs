@@ -130,8 +130,8 @@ namespace WarehouseMenager.ViewModel
 
         //BUTTONS
         public ICommand LogOutCommand => new RelayCommand(execute => LogOut());
-        public AsyncRelayCommand AddCommand =>  new AsyncRelayCommand(async () => await AddTasksAsync(), () => AddTaskInputFilled());
-        public AsyncRelayCommand DeleteCommand => new AsyncRelayCommand(async () => await DeleteTaskAsync(), () => TaskIsSelected());
+        public AsyncRelayCommand AddCommand { get; }
+        public AsyncRelayCommand DeleteCommand { get; }
         public ICommand RefreshCommand => new RelayCommand(execute => RefreshDataAsync());
         public ICommand SwitchPorductMengerView => new RelayCommand(execute => SwitchViewToProductMenagerPanel());
         public ICommand SwitchOperatorPanelView => new RelayCommand(execute => SwitchViewToOperatorPanel());
@@ -148,6 +148,9 @@ namespace WarehouseMenager.ViewModel
             _rampService = new rampService();
             _productService = new productService();
             _userService = new userService();
+
+            AddCommand = new AsyncRelayCommand(async () => await AddTasksAsync(), () => AddTaskInputFilled());
+            DeleteCommand = new AsyncRelayCommand(async () => await DeleteTaskAsync(), () => TaskIsSelected());
         }
 
         //USER DATA AND VERIFICATION

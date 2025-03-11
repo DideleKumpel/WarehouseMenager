@@ -5,25 +5,78 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WarehouseMenager.View"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="650" d:DesignWidth="1200">
     <Grid Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="20*"/>
             <RowDefinition Height="15*"/>
-            <RowDefinition Height="65*"/>
+            <RowDefinition Height="15*"/>
+            <RowDefinition Height="70*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="10">
-            <StackPanel Orientation="Vertical" >
-                <Label>Welcome:</Label>
-                <Label Content="*username*"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+            
+            <StackPanel Orientation="Horizontal">
+            <StackPanel Margin="20,0,20,0">
+                <Label FontSize="24">You are current in:</Label>
+                <Label FontSize="24">OPERATOR PANEL</Label>
             </StackPanel>
-            <Button Height="40" Width="70" Margin="50,0,0,0">Log out</Button>
+            <Button Height="50" Width="100" Margin="15,0,0,0">
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center"> Switch to task menager panel</TextBlock>
+                </Button>
+                <Button Height="50" Width="100" Margin="15,0,0,0" >
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center"> Switch to product menager panel</TextBlock>
+                </Button>
+            </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" >
+            <StackPanel Orientation="Vertical" >
+                <Label FontSize="24">Welcome:</Label>
+                <Label FontSize="24">
+                    <TextBlock TextWrapping="Wrap" Text="{Binding UsernameDisplay}"></TextBlock>
+                </Label>
+            </StackPanel>
+            <Button Height="50" Width="100" Margin="50,0,15,0">Log out</Button>
         </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="10" Width="350">
-            <Button Width="150" Margin="0,0,50,0">Finish task</Button>
-            <Button Width="150">Take Task</Button>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <StackPanel HorizontalAlignment="Left" Margin="20,10">
+                <Label FontSize="16">Mode:</Label>
+                <ComboBox Width="150" Name="DataGridModeSelector" ItemsSource="{Binding ComboBoxDataGridMode}" SelectedItem="{Binding SelectedMode, Mode=TwoWay}"></ComboBox>
+            </StackPanel>
+            <Button Height="50" Width="100">Refresh</Button>
         </StackPanel>
-        <DataGrid Grid.Row="2" Margin="15"></DataGrid>
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+
+            <Button Height="50" Width="100" Margin="30,0,0,0" Command="{Binding FinishTaskCommand}" Visibility="{Binding AssignedButtonsRender}">Finish task</Button>
+            <Button Height="50" Width="100" Margin="30,0,30,0" Command="{Binding AbandonTaskCommand}" Visibility="{Binding AssignedButtonsRender}">
+                    <TextBlock Margin="3" TextWrapping="Wrap" TextAlignment="Center">Abandon the task</TextBlock>
+                </Button>
+
+            <Button Height="50" Width="100" Margin="0,0,30,0" Command="{Binding AssigneTaskCommand}" Visibility="{Binding FreeToTakeButtonsRender}">
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center" >Assigned to the task</TextBlock></Button>
+            
+            </StackPanel>
+        
+        <DataGrid Grid.Row="2" Grid.ColumnSpan="2" Margin="20,0,20,30"
+                    ItemsSource="{Binding DisplayTasks}"
+                    SelectionMode="Extended"
+                    SelectionUnit="FullRow"
+                    SelectionChanged="DataGrid_SelectionChanged"
+                    CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True"
+                    AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Taks" Binding="{Binding Type}" Width="6*"/>
+                        <DataGridTextColumn Header="Barcode" Binding="{Binding Product.Barcode}" Width="20*"/>
+                        <DataGridTextColumn Header="Ramp" Binding="{Binding Ramp.Name}" Width="6*"/>
+                        <DataGridTextColumn Header="Shelf" Binding="{Binding Location.Shelf}" Width="6*"/>
+                        <DataGridTextColumn Header="Row" Binding="{Binding Location.Row}" Width="6*"/>
+                        <DataGridTextColumn Header="Level" Binding="{Binding Location.Level}" Width="6*"/>
+                        <DataGridTextColumn Header="Uppload Date" Binding="{Binding UploadDate}" Width="20*"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="6*"/>
+                        <DataGridTextColumn Header="Assigned employee" Binding="{Binding AssingedEmployeeDisplay}" Width="24*"/>
+                    </DataGrid.Columns>
+
+        </DataGrid>
     </Grid>
 
 </UserControl>
