@@ -35,7 +35,7 @@ namespace WarehouseMenager.View
         {
             if (DataContext is menagerPanelViewModel vm)
             {
-                // Delete uncheck elements
+                // Usunięcie odznaczonych elementów
                 foreach (taskModel removed in e.RemovedItems)
                 {
 
@@ -44,7 +44,7 @@ namespace WarehouseMenager.View
                     vm.DeleteCommand.RaiseCanExecuteChanged();
                 }
 
-                // Add check element
+                // Dodanie nowych zaznaczonych elementów
                 foreach (taskModel added in e.AddedItems)
                 {
                     if (!vm.SelectedTasks.Contains(added))

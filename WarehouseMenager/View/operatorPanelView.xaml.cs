@@ -12,8 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WarehouseMenager.Model;
-using WarehouseMenager.ViewModel;
 
 namespace WarehouseMenager.View
 {
@@ -25,38 +23,6 @@ namespace WarehouseMenager.View
         public operatorPanelView()
         {
             InitializeComponent();
-        }
-
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) //method for selecting multiple rows in datagrid
-        {
-            if (DataContext is operatorPanelViewModel vm)
-            {
-                // Delete uncheck elements
-                foreach (taskModel removed in e.RemovedItems)
-                {
-
-                    Console.WriteLine("Removed form selected list " + removed.Id);
-                    vm.SelectedTasks.Remove(removed);
-                    // notify commands that can execute has changed
-                    vm.FinishTaskCommand.RaiseCanExecuteChanged();
-                    vm.AbandonTaskCommand.RaiseCanExecuteChanged();
-                    vm.AssigneTaskCommand.RaiseCanExecuteChanged();
-                }
-
-                // Add check element
-                foreach (taskModel added in e.AddedItems)
-                {
-                    if (!vm.SelectedTasks.Contains(added))
-                    {
-                        Console.WriteLine("Added to selected list " + added.Id);
-                        vm.SelectedTasks.Add(added);
-                        // notify commands that can execute has changed
-                        vm.FinishTaskCommand.RaiseCanExecuteChanged();
-                        vm.AbandonTaskCommand.RaiseCanExecuteChanged();
-                        vm.AssigneTaskCommand.RaiseCanExecuteChanged();
-                    }
-                }
-            }
         }
     }
 }
