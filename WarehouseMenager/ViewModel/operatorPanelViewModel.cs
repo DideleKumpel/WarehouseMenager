@@ -209,7 +209,42 @@ namespace WarehouseMenager.ViewModel
 
         private async Task AbandonTaskAsync()
         {
-            //todo
+            if (AbanTaskIsBusy == true)
+            {
+                MessageBox.Show("You are arleady abanding the tasks.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            await VerifyUser();
+            AbanTaskIsBusy = true;
+            ObservableCollection<taskModel> taskToAbandon = new ObservableCollection<taskModel>(_selectedTasks);
+            try
+            {
+                int AmmountsofErrors = 0;
+                foreach (taskModel task in taskToAbandon)
+                {
+                    bool succes = await _taskService.UnassingEmployeeFormTaskAsync(task.Id);
+                    if (succes == false)
+                    {
+                        AmmountsofErrors++;
+                    }
+                }
+                if (AmmountsofErrors > 0)
+                {
+                    MessageBox.Show(AmmountsofErrors + " tasks were not Abandoned. Check your internet connection and try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Abandoned to task with succes.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception NoConnect)
+            {
+                MessageBox.Show("No connetion. Chech your internet and log in again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                LogOut();
+            }
+            RefreshDataAsync();
+            AbanTaskIsBusy = false;
         }
 
         private bool CanExecuteAbandonTaskCommand()
@@ -232,12 +267,45 @@ namespace WarehouseMenager.ViewModel
         }
 
         //METHODS FOR ASSINGED TO TASKS
-
         private async Task AssingedToTaskAsync()
         {
-            //todo
-        }
+            if (AssigneTaskIsBusy == true)
+            {
+                MessageBox.Show("You are arleady adding task.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
+            await VerifyUser();
+            AssigneTaskIsBusy = true;
+            ObservableCollection<taskModel> taskToAssinged = new ObservableCollection<taskModel>(_selectedTasks);
+            try
+            {
+                int AmmountsofErrors = 0;
+                foreach (taskModel task in taskToAssinged)
+                {
+                    bool succes = await _taskService.AssingEmployeeToTaskAsync(User.Id, task.Id);
+                    if (succes == false)
+                    {
+                        AmmountsofErrors++;
+                    }
+                }
+                if (AmmountsofErrors > 0)
+                {
+                    MessageBox.Show(AmmountsofErrors + " tasks were not get assigned. Check your internet connection and try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Assigned to task with succes.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception NoConnect)
+            {
+                MessageBox.Show("No connetion. Chech your internet and log in again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                LogOut();
+            }
+            RefreshDataAsync();
+            AssigneTaskIsBusy = false;
+        }
         private bool CanExecuteAssingedToTaskCommand()
         {
             bool canExecute = true;
@@ -257,10 +325,7 @@ namespace WarehouseMenager.ViewModel
             AssigneTaskCommand.RaiseCanExecuteChanged();
         }
 
-
         //OTHER
-
-
         private void OnTaskDisplayModeChagned()
         {
             _selectedTasks.Clear(); //clear selected task list

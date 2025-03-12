@@ -208,7 +208,6 @@ namespace WarehouseMenager.Service
                 }
             }
         }
-
         public async Task<ObservableCollection<taskModel>> LoadTaskFreeToTakeAsync()
         {
             using (var connection = new MySqlConnection(_connectionString))
@@ -276,6 +275,51 @@ namespace WarehouseMenager.Service
                 catch (Exception NoConnetion)
                 {
                     throw;
+                }
+            }
+        }
+        public async Task<bool> AssingEmployeeToTaskAsync(int  EmployeeId, int TaskId)
+        {
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = "UPDATE tasks SET worker_worker_id = @EmployeeId, status = 'taken' WHERE tasks_id = @TaskId;";
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@EmployeeId", EmployeeId);
+                        command.Parameters.AddWithValue("@TaskId", TaskId);
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                        return rowsAffected > 0;
+                    }
+                }
+                catch (Exception NoConnection)
+                {
+                    Console.WriteLine("Error assing employee to task: " + NoConnection.Message);
+                    return false;
+                }
+            }
+        }
+        public async Task<bool> UnassingEmployeeFormTaskAsync(int TaksId)
+        {
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = "UPDATE tasks SET worker_worker_id = null, status = 'toDo' WHERE tasks_id = @TaskId;";
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@TaskId", TaksId);
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                        return rowsAffected > 0;
+                    }
+                }
+                catch (Exception NoConnection)
+                {
+                    Console.WriteLine("Error assing employee to task: " + NoConnection.Message);
+                    return false;
                 }
             }
         }
