@@ -37,7 +37,6 @@ namespace WarehouseMenager.Service
                 }
             }
         }
-
         public async Task<int> LoadNumberOfLocationsAsync()
         {
             using (var connetion = new MySqlConnection(_connectionString))
@@ -59,7 +58,6 @@ namespace WarehouseMenager.Service
                 }
             }
         }
-
         public async Task<List<int>> XIdsOfEmptySpacesAsync(int number)
         {
             using (var connetion = new MySqlConnection(_connectionString))
@@ -88,7 +86,6 @@ namespace WarehouseMenager.Service
                 }
             }
         }
-
         public async Task<bool> FillLocationAsync(int LocationId, string Barcode)
         {
             using (var connetion = new MySqlConnection(_connectionString))

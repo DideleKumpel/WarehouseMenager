@@ -22,7 +22,7 @@
                 <Label FontSize="24">You are current in:</Label>
                 <Label FontSize="24">OPERATOR PANEL</Label>
             </StackPanel>
-            <Button Height="50" Width="100" Margin="15,0,0,0">
+            <Button Height="50" Width="100" Margin="15,0,0,0" Command="{Binding SwitchToTaskManagerCommand}">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center"> Switch to task menager panel</TextBlock>
                 </Button>
                 <Button Height="50" Width="100" Margin="15,0,0,0" >

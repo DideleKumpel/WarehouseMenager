@@ -323,5 +323,27 @@ namespace WarehouseMenager.Service
                 }
             }
         }
+        public async Task<bool> FinishTaskAsync(int TaskId)
+        {
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = "UPDATE tasks SET status = 'done', finish_dateTime = NOW() WHERE tasks_id = @TaskId;";
+                    using (var command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@TaskId", TaskId);
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                        return rowsAffected > 0;
+                    }
+                }
+                catch (Exception NoConnection)
+                {
+                    Console.WriteLine("Error finishing task: " + NoConnection.Message);
+                    return false;
+                }
+            }
+        }
     }
 }

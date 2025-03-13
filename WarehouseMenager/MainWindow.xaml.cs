@@ -28,15 +28,15 @@ namespace WarehouseMenager
         public MainWindow()
         {
             InitializeComponent();
-            //DataContext = new loginPanelViewModel();
+            DataContext = new loginPanelViewModel();
 
             //For testing operatorPanel
-            userService _userService = new userService();
-            userModel user = new userModel { Name = "Mike", Lastname = "Johnson", Username = "mjohnson", Password = "secure123" };
-            operatorPanelViewModel VM = new operatorPanelViewModel();
-            DataContext = VM;
-            Mediator.NotifyViewModel1FullNameChanged(user);
-            VM.RefreshDataAsync();
+            //userService _userService = new userService();
+            //userModel user = new userModel { Name = "Mike", Lastname = "Johnson", Username = "mjohnson", Password = "secure123" };
+            //operatorPanelViewModel VM = new operatorPanelViewModel();
+            //DataContext = VM;
+            //Mediator.NotifyViewModel1FullNameChanged(user);
+            //VM.RefreshDataAsync();
         }
     }
 }

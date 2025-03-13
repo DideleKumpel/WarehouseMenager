@@ -227,7 +227,7 @@ namespace WarehouseMenager.ViewModel
         }
 
         // METHODS FOR ADDING TASKS
-        private async Task AddTasksAsync()
+        private async Task AddTasksAsync()                          //Error to fix when adding load task task locations ins asinged to empty space it should be assinge to location were prdocutof this task lay and it should check if enught of this item is in warehouse
         {
             if (AddTaskAsyncBusy == true)
             {
@@ -274,7 +274,7 @@ namespace WarehouseMenager.ViewModel
                         AmmountOfErrors++;
                         Console.WriteLine("Error adding task to DB. Task-" + TaskType + " " + _selectedRamp.Name + " " + _selectedProduct.Barcode + " " + space);
                     }
-                    if (TaskType == "unload")
+                    if (TaskType == "unload" && TaskInsertSucces == true)
                     {
                         bool LocationUpdateSucces = await _locationsServise.FillLocationAsync(space, _selectedProduct.Barcode);
                         if (LocationUpdateSucces == false)
@@ -403,7 +403,10 @@ namespace WarehouseMenager.ViewModel
         }
         private void SwitchViewToOperatorPanel()
         {
-            Application.Current.MainWindow.DataContext = new operatorPanelViewModel();
+            operatorPanelViewModel viewModel = new operatorPanelViewModel();
+            Application.Current.MainWindow.DataContext = viewModel;
+            Mediator.NotifyViewModel1FullNameChanged(User);
+            viewModel.RefreshDataAsync();
         }
         private void SwitchViewToProductMenagerPanel()
         {

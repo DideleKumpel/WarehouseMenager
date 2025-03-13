@@ -20,6 +20,7 @@ namespace WarehouseMenager.ViewModel
         //Services
         private userService _userService;
         private taskService _taskService;
+        private locationsServise _locationsServise;
 
         //DISPLAY AND DB DATA VARIABULES
         public ObservableCollection<taskModel> DisplayTasks { get; set; }
@@ -87,7 +88,8 @@ namespace WarehouseMenager.ViewModel
         public AsyncRelayCommand FinishTaskCommand { get; }
         public AsyncRelayCommand AssigneTaskCommand { get; }
         public AsyncRelayCommand AbandonTaskCommand { get; }
-        public ICommand SwitchToTaskManagerCommand;
+        //public AsyncRelayCommand SwitchToTaskManagerCommand { get; }
+        public ICommand SwitchToTaskManagerCommand => new RelayCommand(execute => SwitchToTaskManager());
         public ICommand SwitchToProductManagerCommand;
         public ICommand LogOutCommand => new RelayCommand(execute => LogOut());
         public ICommand RefreshCommand => new RelayCommand (execute => RefreshDataAsync());
@@ -103,6 +105,7 @@ namespace WarehouseMenager.ViewModel
 
             _userService = new userService();
             _taskService = new taskService();
+            _locationsServise = new locationsServise();
 
             //selecting start dataGrid mode and visiblity on buttons
             _selectedMode = ComboBoxDataGridMode[0];
@@ -112,6 +115,7 @@ namespace WarehouseMenager.ViewModel
             FinishTaskCommand = new AsyncRelayCommand ( async () => await FinishTaskAsync(), () => CanExecuteFinishTaskCommand());
             AssigneTaskCommand = new AsyncRelayCommand(async () => await AssingedToTaskAsync(), () => CanExecuteAssingedToTaskCommand());
             AbandonTaskCommand = new AsyncRelayCommand(async () => await AbandonTaskAsync(), () => CanExecuteAbandonTaskCommand());
+            //SwitchToTaskManagerCommand = new AsyncRelayCommand(async () => await Task.Run(() => SwitchToTaskManager()));
         }
 
         //USER DATA AND VERIFICATION
@@ -182,7 +186,49 @@ namespace WarehouseMenager.ViewModel
 
         private async Task FinishTaskAsync()
         {
-            //todo
+            if (AbanTaskIsBusy == true)
+            {
+                MessageBox.Show("You are arleady finishing the tasks.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            await VerifyUser();
+            FinishTaskIsBusy = true;
+            ObservableCollection<taskModel> taskToFinish = new ObservableCollection<taskModel>(_selectedTasks);
+            try
+            {
+                int AmmountsOfErrors = 0;
+                foreach (taskModel task in taskToFinish)
+                {
+                    bool succes = await _taskService.FinishTaskAsync(task.Id);
+                    if (succes == false)
+                    {
+                        AmmountsOfErrors++;
+                    }
+                    if (succes == true && task.Type == "load")
+                    {
+                        bool LocationUpdateSucces = await _locationsServise.ReleaseLocation(task.Location.Id);
+                        if (LocationUpdateSucces == false)
+                        {
+                            AmmountsOfErrors++;
+                            Console.WriteLine("Error updating to DB. Location-" + task.Location.Id);
+                        }
+                    }
+                }
+                if (AmmountsOfErrors > 0)
+                {
+                    MessageBox.Show(AmmountsOfErrors + " tasks were not finished. Check your internet connection and try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Finished task with succes.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception NoConnect)
+            {
+                MessageBox.Show("No connetion. Chech your internet and log in again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                LogOut();
+            }
         }
 
         private bool CanExecuteFinishTaskCommand()
@@ -344,6 +390,14 @@ namespace WarehouseMenager.ViewModel
         private void LogOut()
         {
             Application.Current.MainWindow.DataContext = new loginPanelViewModel();
+        }
+
+        private void SwitchToTaskManager()
+        {
+            menagerPanelViewModel viewModel = new menagerPanelViewModel();
+            Application.Current.MainWindow.DataContext = viewModel;
+            Mediator.NotifyViewModel1FullNameChanged(User);
+            viewModel.RefreshDataAsync();   //loads tasks, products, ramps, locations data from databese
         }
     }
 }
