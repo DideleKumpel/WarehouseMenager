@@ -237,7 +237,7 @@ namespace WarehouseMenager.ViewModel
                 return;
             }
       
-            AddTaskAsyncBusy = true;
+            AddTaskAsyncBusy = true;   //put the flag up
             await VerifyUser();   //verification of user before adding task
             string TaskType;
             if (_loadBtn == true)
@@ -371,22 +371,26 @@ namespace WarehouseMenager.ViewModel
                 return;
             }
             int AmmountOfErrors = 0;
+
             foreach (var task in TasksToDelete)
             {
-                bool TaskDeleteSucces = await _taskService.DeleteTaskByIdAsync(task.Id);
-                if (TaskDeleteSucces == false)
+                if(task.Type == "load")
                 {
-                    AmmountOfErrors++;
-                    Console.WriteLine("Error deleting task from DB. Task-" + task.Id);
-                }
-                if(task.Type == "unload")
+                    bool TaskDeleteSucces = await _taskService.DeleteTaskAsync(task);
+                    if (TaskDeleteSucces == false)
+                    {
+                        AmmountOfErrors++;
+                        Console.WriteLine("Error deleting task from DB. Task-" + task.Id);
+                    }
+                }else if(task.Type== "unload")
                 {
-                    bool LocationUpdateSucces = await _locationsServise.FillLocationAsync(task.Location.Id, null);
+                    bool LocationUpdateSucces = await _taskLocationCoordinatorService.DeleteUnloadTaskAsync(task);
                     if (LocationUpdateSucces == false)
                     {
                         AmmountOfErrors++;
                         Console.WriteLine("Error updating to DB. Location-" + task.Location.Id);
                     }
+
                 }
             }
             if (AmmountOfErrors > 0) //If error occured
@@ -395,7 +399,7 @@ namespace WarehouseMenager.ViewModel
             }
             else
             {
-                MessageBox.Show("Adding task was sucesful", "Info", MessageBoxButton.OK);
+                MessageBox.Show("Deleting task was sucesful", "Info", MessageBoxButton.OK);
             }
             RefreshDataAsync();
             DeleteTaskAsyncBusy = false;

@@ -115,7 +115,7 @@ namespace WarehouseMenager.Service
                 }
             }
         }
-        public async Task<bool> DeleteTaskByIdAsync(int TaskId)
+        public async Task<bool> DeleteTaskAsync(taskModel task)
         {
             using (var connection = new MySqlConnection(_connectionString))
             {
@@ -125,7 +125,7 @@ namespace WarehouseMenager.Service
                     string query = "DELETE FROM tasks WHERE tasks_id = @Id;";
                     using (var command = new MySqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@Id", TaskId);
+                        command.Parameters.AddWithValue("@Id", task.Id);
                         
                         int rowsAffected = await command.ExecuteNonQueryAsync();
                         return rowsAffected > 0;
