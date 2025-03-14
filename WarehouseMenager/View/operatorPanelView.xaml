@@ -22,10 +22,10 @@
                 <Label FontSize="24">You are current in:</Label>
                 <Label FontSize="24">OPERATOR PANEL</Label>
             </StackPanel>
-            <Button Height="50" Width="100" Margin="15,0,0,0" Command="{Binding SwitchToTaskManagerCommand}">
+            <Button Height="50" Width="100" Margin="15,0,0,0" Command="{Binding SwitchToTaskManagerCommand}" Visibility="{Binding ManagerButtonsRender}">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center"> Switch to task menager panel</TextBlock>
                 </Button>
-                <Button Height="50" Width="100" Margin="15,0,0,0" >
+            <Button Height="50" Width="100" Margin="15,0,0,0" Command="{Binding SwitchToProductManagerCommand}" Visibility="{Binding ManagerButtonsRender}">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center"> Switch to product menager panel</TextBlock>
                 </Button>
             </StackPanel>
@@ -36,14 +36,14 @@
                     <TextBlock TextWrapping="Wrap" Text="{Binding UsernameDisplay}"></TextBlock>
                 </Label>
             </StackPanel>
-            <Button Height="50" Width="100" Margin="50,0,15,0">Log out</Button>
+            <Button Height="50" Width="100" Margin="50,0,15,0" Command="{Binding LogOutCommand}">Log out</Button>
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <StackPanel HorizontalAlignment="Left" Margin="20,10">
                 <Label FontSize="16">Mode:</Label>
                 <ComboBox Width="150" Name="DataGridModeSelector" ItemsSource="{Binding ComboBoxDataGridMode}" SelectedItem="{Binding SelectedMode, Mode=TwoWay}"></ComboBox>
             </StackPanel>
-            <Button Height="50" Width="100">Refresh</Button>
+            <Button Height="50" Width="100" Command="{Binding RefreshCommand}">Refresh</Button>
         </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
 

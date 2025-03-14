@@ -28,6 +28,7 @@ namespace WarehouseMenager.ViewModel
         private readonly rampService _rampService;
         private readonly productService _productService;
         private readonly userService _userService;
+        private readonly taskLocationCoordinatorService _taskLocationCoordinatorService;
 
         //DISPLAY AND DB DATA VARIABULES
         public ObservableCollection<taskModel> Tasks { get; set; }
@@ -148,6 +149,7 @@ namespace WarehouseMenager.ViewModel
             _rampService = new rampService();
             _productService = new productService();
             _userService = new userService();
+            _taskLocationCoordinatorService= new taskLocationCoordinatorService();
 
             AddCommand = new AsyncRelayCommand(async () => await AddTasksAsync(), () => AddTaskInputFilled());
             DeleteCommand = new AsyncRelayCommand(async () => await DeleteTaskAsync(), () => TaskIsSelected());
@@ -227,7 +229,7 @@ namespace WarehouseMenager.ViewModel
         }
 
         // METHODS FOR ADDING TASKS
-        private async Task AddTasksAsync()                          //Error to fix when adding load task task locations ins asinged to empty space it should be assinge to location were prdocutof this task lay and it should check if enught of this item is in warehouse
+        private async Task AddTasksAsync()        //Error to fix when adding load task task locations ins asinged to empty space it should be assinge to location were prdocut of this task lay and it should check if enught of this item is in warehouse
         {
             if (AddTaskAsyncBusy == true)
             {
@@ -260,43 +262,58 @@ namespace WarehouseMenager.ViewModel
                return;
             }
 
-            await CountFreeWarehousesSpaces();  //update number off free spaces in warehouse
-            if (this._amountInput <= this.FreeSpacesInWarehous) //check if in warehouse is enough space
+            int AmmountOfErrors = 0; // int for tracking num of errors when inserting data to db
+            if (_loadBtn == true)  //when task type is load
             {
+                List<int> LocationsIdOfproduct = await _locationsServise.GetLocatonsIdOfProductAsync(_selectedProduct.Barcode, _amountInput); //get list of locations where product is
+                if(LocationsIdOfproduct.Count < _amountInput) //check if there is enough of this product in warehouse
+                {
+                    MessageBox.Show("Not enough of this product in warehouse.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    AddTaskAsyncBusy = false;
+                    return;
+                }
+                
+                foreach(int space in LocationsIdOfproduct)   //adding task for every item and his location
+                {
+                    bool TaksInsertSucces = await _taskService.InsertTaskAsync(TaskType, _selectedRamp.Name, _selectedProduct.Barcode, space);
+                    if (TaksInsertSucces == false)
+                    {
+                        AmmountOfErrors++;
+                        Console.WriteLine("Error adding task to DB. Task-" + TaskType + " " + _selectedRamp.Name + " " + _selectedProduct.Barcode + " " + space);
+                    }
+                }
+            }
+            else if(_loadBtn == false)  // when task type is unload
+            {
+                await CountFreeWarehousesSpaces();  //update number off free spaces in warehouse
+                if (this._amountInput > this.FreeSpacesInWarehous)  //if there is no enought space in warehouse
+                {
+                    MessageBox.Show("No enough space in warehouse.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    AddTaskAsyncBusy = false;
+                    return;
+                }
+                
                 List<int> EmptySpaces = await _locationsServise.XIdsOfEmptySpacesAsync(this._amountInput); //get list of empty spaces
-                int AmmountOfErrors = 0;
                 foreach (int space in EmptySpaces)
                 {
-                     bool TaskInsertSucces = await _taskService.InsertTaskAsync(TaskType, _selectedRamp.Name, _selectedProduct.Barcode, space); //add task to DB
-
+                    bool TaskInsertSucces = await _taskLocationCoordinatorService.AddUnloadTaskAsync(TaskType, _selectedRamp.Name, _selectedProduct.Barcode, space); //add task to DB and update location
                     if (TaskInsertSucces == false)
                     {
                         AmmountOfErrors++;
                         Console.WriteLine("Error adding task to DB. Task-" + TaskType + " " + _selectedRamp.Name + " " + _selectedProduct.Barcode + " " + space);
                     }
-                    if (TaskType == "unload" && TaskInsertSucces == true)
-                    {
-                        bool LocationUpdateSucces = await _locationsServise.FillLocationAsync(space, _selectedProduct.Barcode);
-                        if (LocationUpdateSucces == false)
-                        {
-                            AmmountOfErrors++;
-                            Console.WriteLine("Error updating to DB. Location-" + space);
-                        }
-                    }
                 }
-                if (AmmountOfErrors > 0) //If error occured
-                {
-                        MessageBox.Show("Error adding tasks or updating locatn" + AmmountOfErrors + "to DB.", "Error", MessageBoxButton.OK);
-                }
-                else
-                {
-                        MessageBox.Show("Task adding complet with succes", "Info", MessageBoxButton.OK);
-                }
+            }
+            if (AmmountOfErrors > 0) //If error occured
+            {
+                   MessageBox.Show("Error adding tasks or updating locatn" + AmmountOfErrors + "to DB.", "Error", MessageBoxButton.OK);
             }
             else
             {
-                    MessageBox.Show("No enough space in warehouse.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                   MessageBox.Show("Task adding complet with succes", "Info", MessageBoxButton.OK);
             }
+
+            
             RefreshDataAsync();
             AddTaskAsyncBusy = false;         
         }
@@ -327,7 +344,7 @@ namespace WarehouseMenager.ViewModel
         }
 
         //METHODS FOR DELETING TASKS
-        private async Task DeleteTaskAsync()
+        private async Task DeleteTaskAsync()                 // Error to fix deleting task it is unload shoud be clearing locations and deleting a task in in one sql sesion
         {
             if (DeleteTaskAsyncBusy == true) //onyl one delete can run in the same time
             {

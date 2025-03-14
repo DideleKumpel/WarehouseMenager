@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,6 +69,36 @@ namespace WarehouseMenager.Service
                     string query = "SELECT locations_id FROM locations WHERE products_products_id IS NULL LIMIT " + number + ";";
                     using (var command = new MySqlCommand(query, connetion))
                     {
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            List<int> EmptySpacesIds = new List<int> { };
+                            while (await reader.ReadAsync())
+                            {
+                                int Id = reader.GetInt32(0);
+                                EmptySpacesIds.Add(Id);
+                            }
+                            return EmptySpacesIds;
+                        }
+                    }
+                }
+                catch (Exception NoConnection)
+                {
+                    throw;
+                }
+            }
+        }
+        public async Task <List<int>> GetLocatonsIdOfProductAsync(string productId, int amountToFind)
+        {
+            using (var connetion = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connetion.OpenAsync();
+                    string query = "SELECT locations_id FROM locations WHERE products_products_id = @productId LIMIT @number;";
+                    using (var command = new MySqlCommand(query, connetion))
+                    {
+                        command.Parameters.AddWithValue("@productId", productId);
+                        command.Parameters.AddWithValue("@number", amountToFind);
                         using (var reader = await command.ExecuteReaderAsync())
                         {
                             List<int> EmptySpacesIds = new List<int> { };

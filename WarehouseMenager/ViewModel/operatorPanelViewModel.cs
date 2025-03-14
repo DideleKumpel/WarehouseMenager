@@ -83,6 +83,7 @@ namespace WarehouseMenager.ViewModel
         }
         public string FreeToTakeButtonsRender { get; set; } //Biding for buttons visiblity that depends of selected datagrid mode in combobox
         public string AssignedButtonsRender { get; set; }
+        public string ManagerButtonsRender { get; set; }
 
         //BUTTONS
         public AsyncRelayCommand FinishTaskCommand { get; }
@@ -90,7 +91,7 @@ namespace WarehouseMenager.ViewModel
         public AsyncRelayCommand AbandonTaskCommand { get; }
         //public AsyncRelayCommand SwitchToTaskManagerCommand { get; }
         public ICommand SwitchToTaskManagerCommand => new RelayCommand(execute => SwitchToTaskManager());
-        public ICommand SwitchToProductManagerCommand;
+        public ICommand SwitchToProductManagerCommand => new RelayCommand(execute => SwitchToProductManager());
         public ICommand LogOutCommand => new RelayCommand(execute => LogOut());
         public ICommand RefreshCommand => new RelayCommand (execute => RefreshDataAsync());
 
@@ -111,6 +112,7 @@ namespace WarehouseMenager.ViewModel
             _selectedMode = ComboBoxDataGridMode[0];
             FreeToTakeButtonsRender = "Visible";
             AssignedButtonsRender = "Collapsed";
+            ManagerButtonsRender = "Collapsed";
 
             FinishTaskCommand = new AsyncRelayCommand ( async () => await FinishTaskAsync(), () => CanExecuteFinishTaskCommand());
             AssigneTaskCommand = new AsyncRelayCommand(async () => await AssingedToTaskAsync(), () => CanExecuteAssingedToTaskCommand());
@@ -130,11 +132,16 @@ namespace WarehouseMenager.ViewModel
             try
             {
                 this.User = await _userService.LoginAsync(User.Username, User.Password);
-                if (this.User.Role != "manager")
+                if (this.User.Role == "menager")
                 {
-                    MessageBox.Show("Invalid role. Loging out", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    LogOut();
+                    ManagerButtonsRender = "Visible";
+                    
                 }
+                else
+                {
+                    ManagerButtonsRender = "Collapsed";
+                }
+                OnPropertChanged(nameof(ManagerButtonsRender));
             }
             catch (Exception NoConnect)
             {
@@ -184,9 +191,9 @@ namespace WarehouseMenager.ViewModel
 
         //METHODS FOR FINISH TASKS
 
-        private async Task FinishTaskAsync()
+        private async Task FinishTaskAsync()  //error when finisfing task with location should be done in one sql sesjion
         {
-            if (AbanTaskIsBusy == true)
+            if (FinishTaskIsBusy == true)
             {
                 MessageBox.Show("You are arleady finishing the tasks.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -229,6 +236,7 @@ namespace WarehouseMenager.ViewModel
                 MessageBox.Show("No connetion. Chech your internet and log in again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 LogOut();
             }
+            FinishTaskIsBusy= false;
         }
 
         private bool CanExecuteFinishTaskCommand()
@@ -398,6 +406,13 @@ namespace WarehouseMenager.ViewModel
             Application.Current.MainWindow.DataContext = viewModel;
             Mediator.NotifyViewModel1FullNameChanged(User);
             viewModel.RefreshDataAsync();   //loads tasks, products, ramps, locations data from databese
+        }
+        private void SwitchToProductManager()
+        {
+            productMengerPanelViewModel viewModel = new productMengerPanelViewModel();
+            Application.Current.MainWindow.DataContext = viewModel;
+            Mediator.NotifyViewModel1FullNameChanged(User);
+            viewModel.RefreshDataAsync();   
         }
     }
 }

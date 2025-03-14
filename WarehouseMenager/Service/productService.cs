@@ -12,7 +12,7 @@ using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
 
 namespace WarehouseMenager.Service
 {
-    class productService
+    internal class productService
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WarehouseDb"].ConnectionString;
         public async Task<ObservableCollection<productModel>> LoadProductsAsync()

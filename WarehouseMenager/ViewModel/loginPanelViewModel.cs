@@ -59,7 +59,10 @@ namespace WarehouseMenager.ViewModel
                 // Switch to the right view based on the role
                 if (user.Role == "operator")
                 {
-                    Application.Current.MainWindow.DataContext = new operatorPanelViewModel();
+                    operatorPanelViewModel viewModel = new operatorPanelViewModel();
+                    Application.Current.MainWindow.DataContext = viewModel;
+                    Mediator.NotifyViewModel1FullNameChanged(user);
+                    viewModel.RefreshDataAsync();  
                 }
                 else if (user.Role == "manager")
                 {
