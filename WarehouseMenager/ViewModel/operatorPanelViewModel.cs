@@ -18,9 +18,10 @@ namespace WarehouseMenager.ViewModel
         public userModel User;
 
         //Services
-        private userService _userService;
-        private taskService _taskService;
-        private locationsServise _locationsServise;
+        private readonly userService _userService;
+        private readonly taskService _taskService;
+        private readonly locationsServise _locationsServise;
+        private readonly taskLocationCoordinatorService _taskLocationCoordinatorService;
 
         //DISPLAY AND DB DATA VARIABULES
         public ObservableCollection<taskModel> DisplayTasks { get; set; }
@@ -107,6 +108,7 @@ namespace WarehouseMenager.ViewModel
             _userService = new userService();
             _taskService = new taskService();
             _locationsServise = new locationsServise();
+            _taskLocationCoordinatorService = new taskLocationCoordinatorService();
 
             //selecting start dataGrid mode and visiblity on buttons
             _selectedMode = ComboBoxDataGridMode[0];
@@ -132,10 +134,9 @@ namespace WarehouseMenager.ViewModel
             try
             {
                 this.User = await _userService.LoginAsync(User.Username, User.Password);
-                if (this.User.Role == "menager")
+                if (this.User.Role == "manager")
                 {
                     ManagerButtonsRender = "Visible";
-                    
                 }
                 else
                 {
@@ -207,18 +208,21 @@ namespace WarehouseMenager.ViewModel
                 int AmmountsOfErrors = 0;
                 foreach (taskModel task in taskToFinish)
                 {
-                    bool succes = await _taskService.FinishTaskAsync(task.Id);
-                    if (succes == false)
+                    if(task.Type == "unload")
                     {
-                        AmmountsOfErrors++;
-                    }
-                    if (succes == true && task.Type == "load")
-                    {
-                        bool LocationUpdateSucces = await _locationsServise.ReleaseLocation(task.Location.Id);
-                        if (LocationUpdateSucces == false)
+                        bool succes = await _taskService.FinishTaskAsync(task.Id);
+                        if (succes == false)
                         {
                             AmmountsOfErrors++;
-                            Console.WriteLine("Error updating to DB. Location-" + task.Location.Id);
+                            Console.WriteLine("Error updating to DB. Task-" + task.Id);
+                        }
+                    }else if(task.Type == "load")
+                    {
+                        bool succes = await _taskLocationCoordinatorService.FinishLoadTaskAsync(task);
+                        if (succes == false)
+                        {
+                            AmmountsOfErrors++;
+                            Console.WriteLine("Error updating to DB. Task-" + task.Id);
                         }
                     }
                 }
@@ -236,7 +240,8 @@ namespace WarehouseMenager.ViewModel
                 MessageBox.Show("No connetion. Chech your internet and log in again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 LogOut();
             }
-            FinishTaskIsBusy= false;
+            RefreshDataAsync();
+            FinishTaskIsBusy = false;
         }
 
         private bool CanExecuteFinishTaskCommand()

@@ -431,7 +431,10 @@ namespace WarehouseMenager.ViewModel
         }
         private void SwitchViewToOperatorPanel() 
         {
-            
+            operatorPanelViewModel viewModel = new operatorPanelViewModel();
+            Application.Current.MainWindow.DataContext = viewModel;
+            Mediator.NotifyViewModel1FullNameChanged(User);
+            viewModel.RefreshDataAsync();
         }
 
     }

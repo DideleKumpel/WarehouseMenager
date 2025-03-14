@@ -97,5 +97,41 @@ namespace WarehouseMenager.Service
                 }
             }
         }
+        public async Task<bool> FinishLoadTaskAsync(taskModel task)
+        {
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    using (var transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            var updateTask = new MySqlCommand(@"UPDATE tasks SET status = 'done', finish_dateTime = NOW() WHERE tasks_id = @TaskID;", connection, transaction);
+                            updateTask.Parameters.AddWithValue("@TaskID", task.Id);
+                            updateTask.ExecuteNonQuery();
+                            var updateLocation = new MySqlCommand(@"UPDATE locations SET products_products_id = NULL WHERE locations_id = @LocationId;", connection, transaction);
+                            updateLocation.Parameters.AddWithValue("@LocationId", task.Location.Id);
+                            updateLocation.ExecuteNonQuery();
+                            transaction.Commit();   //commit changes to DB
+                            Console.WriteLine("Transaction completed successfully!");
+                            return true;
+                        }
+                        catch (Exception ex)   //if transaction failed 
+                        {
+                            transaction.Rollback();   //rollback changes
+                            Console.WriteLine($"Transaction failed: {ex.Message}");
+                            return false;
+                        }
+                    }
+                }
+                catch (Exception NoConnection)
+                {
+                    Console.WriteLine("Error instering data do DB: " + NoConnection.Message);
+                    return false;
+                }
+            }
+        }
     }
 }
