@@ -45,14 +45,14 @@ namespace WarehouseMenager.ViewModel
                 }
                 catch (Exception NoConnetion)
                 {
-                    LoginAsyncBusy=false; //put flog down
+                    LoginAsyncBusy=false; //put flag down
                     return;
                 }
 
                 if (user == null)
                 {
                     MessageBox.Show("Invalid username or password.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    LoginAsyncBusy = false;  //put flog down
+                    LoginAsyncBusy = false;  //put flag down
                     return;
                 }
 
@@ -62,7 +62,7 @@ namespace WarehouseMenager.ViewModel
                     operatorPanelViewModel viewModel = new operatorPanelViewModel();
                     Application.Current.MainWindow.DataContext = viewModel;
                     Mediator.NotifyViewModel1FullNameChanged(user);
-                    viewModel.RefreshDataAsync();  
+                    viewModel.RefreshDataAsync();  //loads tasks form DB
                 }
                 else if (user.Role == "manager")
                 {

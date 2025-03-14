@@ -126,7 +126,7 @@ namespace WarehouseMenager.ViewModel
         private void UserDataTransfer(userModel userData) //method to save user data from loginPanel and verificate it with DB
         {
             this.User = userData;
-            Username = User.Name + " " + User.Lastname;
+            this.Username = this.User.Name + " " + this.User.Lastname;
             OnPropertChanged(nameof(UsernameDisplay));
         }
         private async Task VerifyUser()
@@ -165,7 +165,7 @@ namespace WarehouseMenager.ViewModel
             await VerifyUser();
             try
             {
-                assignedTasks = await _taskService.LoadTaskByAssignedEmployeeId(User.Id);
+                this.assignedTasks = await _taskService.LoadTaskByAssignedEmployeeId(User.Id);
                 OnPropertChanged(nameof(DisplayTasks));
             }
             catch (Exception NoConnect)
@@ -180,7 +180,7 @@ namespace WarehouseMenager.ViewModel
             await VerifyUser();
             try
             {
-                freeToTakeTasks = await _taskService.LoadTaskFreeToTakeAsync();
+                this.freeToTakeTasks = await _taskService.LoadTaskFreeToTakeAsync();
                 OnPropertChanged(nameof(DisplayTasks));
             }
             catch (Exception NoConnect)
@@ -192,23 +192,23 @@ namespace WarehouseMenager.ViewModel
 
         //METHODS FOR FINISH TASKS
 
-        private async Task FinishTaskAsync()  //error when finisfing task with location should be done in one sql sesjion
+        private async Task FinishTaskAsync()
         {
-            if (FinishTaskIsBusy == true)
+            if (this.FinishTaskIsBusy == true)
             {
                 MessageBox.Show("You are arleady finishing the tasks.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             await VerifyUser();
-            FinishTaskIsBusy = true;
-            ObservableCollection<taskModel> taskToFinish = new ObservableCollection<taskModel>(_selectedTasks);
+            this.FinishTaskIsBusy = true;
+            ObservableCollection<taskModel> taskToFinish = new ObservableCollection<taskModel>(this._selectedTasks);  //copy selected tasks to new list so user cant change it while method is running
             try
             {
                 int AmmountsOfErrors = 0;
-                foreach (taskModel task in taskToFinish)
+                foreach (taskModel task in taskToFinish)  //finishing tasks
                 {
-                    if(task.Type == "unload")
+                    if(task.Type == "unload")   //if task is unload we only need to update task status
                     {
                         bool succes = await _taskService.FinishTaskAsync(task.Id);
                         if (succes == false)
@@ -216,7 +216,7 @@ namespace WarehouseMenager.ViewModel
                             AmmountsOfErrors++;
                             Console.WriteLine("Error updating to DB. Task-" + task.Id);
                         }
-                    }else if(task.Type == "load")
+                    }else if(task.Type == "load") //if task is load we need to update task status and location
                     {
                         bool succes = await _taskLocationCoordinatorService.FinishLoadTaskAsync(task);
                         if (succes == false)
@@ -241,13 +241,13 @@ namespace WarehouseMenager.ViewModel
                 LogOut();
             }
             RefreshDataAsync();
-            FinishTaskIsBusy = false;
+            this.FinishTaskIsBusy = false;
         }
 
         private bool CanExecuteFinishTaskCommand()
         {
             bool canExecute = true;
-            if(_selectedMode != "Assigned")
+            if(this._selectedMode != "Assigned")
             {
                 canExecute = false;
             }
@@ -268,19 +268,19 @@ namespace WarehouseMenager.ViewModel
 
         private async Task AbandonTaskAsync()
         {
-            if (AbanTaskIsBusy == true)
+            if (this.AbanTaskIsBusy == true)
             {
                 MessageBox.Show("You are arleady abanding the tasks.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             await VerifyUser();
-            AbanTaskIsBusy = true;
-            ObservableCollection<taskModel> taskToAbandon = new ObservableCollection<taskModel>(_selectedTasks);
+            this.AbanTaskIsBusy = true;
+            ObservableCollection<taskModel> taskToAbandon = new ObservableCollection<taskModel>(this._selectedTasks);    //copy selected tasks to new list so user cant change it while method is running
             try
             {
                 int AmmountsofErrors = 0;
-                foreach (taskModel task in taskToAbandon)
+                foreach (taskModel task in taskToAbandon)     //update task status to "toDo" and set worker id to null for selected tasks
                 {
                     bool succes = await _taskService.UnassingEmployeeFormTaskAsync(task.Id);
                     if (succes == false)
@@ -303,13 +303,13 @@ namespace WarehouseMenager.ViewModel
                 LogOut();
             }
             RefreshDataAsync();
-            AbanTaskIsBusy = false;
+            this.AbanTaskIsBusy = false;
         }
 
         private bool CanExecuteAbandonTaskCommand()
         {
             bool canExecute = true;
-            if (_selectedMode != "Assigned")
+            if (this._selectedMode != "Assigned")
             {
                 canExecute = false;
             }
@@ -328,21 +328,21 @@ namespace WarehouseMenager.ViewModel
         //METHODS FOR ASSINGED TO TASKS
         private async Task AssingedToTaskAsync()
         {
-            if (AssigneTaskIsBusy == true)
+            if (this.AssigneTaskIsBusy == true)
             {
                 MessageBox.Show("You are arleady adding task.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             await VerifyUser();
-            AssigneTaskIsBusy = true;
-            ObservableCollection<taskModel> taskToAssinged = new ObservableCollection<taskModel>(_selectedTasks);
+            this.AssigneTaskIsBusy = true;
+            ObservableCollection<taskModel> taskToAssinged = new ObservableCollection<taskModel>(this._selectedTasks); //copy selected tasks to new list so user cant change it while method is running
             try
             {
                 int AmmountsofErrors = 0;
-                foreach (taskModel task in taskToAssinged)
+                foreach (taskModel task in taskToAssinged)   //assing selected tasks to user
                 {
-                    bool succes = await _taskService.AssingEmployeeToTaskAsync(User.Id, task.Id);
+                    bool succes = await _taskService.AssingEmployeeToTaskAsync(this.User.Id, task.Id);
                     if (succes == false)
                     {
                         AmmountsofErrors++;
@@ -363,12 +363,12 @@ namespace WarehouseMenager.ViewModel
                 LogOut();
             }
             RefreshDataAsync();
-            AssigneTaskIsBusy = false;
+            this.AssigneTaskIsBusy = false;
         }
         private bool CanExecuteAssingedToTaskCommand()
         {
             bool canExecute = true;
-            if (_selectedMode != "Free to take")
+            if (this._selectedMode != "Free to take")
             {
                 canExecute = false;
             }
@@ -389,15 +389,15 @@ namespace WarehouseMenager.ViewModel
         {
             _selectedTasks.Clear(); //clear selected task list
             Console.WriteLine("Selected task list cleared");
-            if(_selectedMode == "Free to take")
+            if(this._selectedMode == "Free to take")
             {
-                DisplayTasks = freeToTakeTasks;
-            }else if(_selectedMode == "Assigned")
+                this.DisplayTasks = this.freeToTakeTasks;
+            }else if(this._selectedMode == "Assigned")
             {
-                DisplayTasks = assignedTasks;
+                this.DisplayTasks = assignedTasks;
             }
             OnDataForAddTaskChagned();
-            OnPropertChanged(nameof(DisplayTasks));
+            OnPropertChanged(nameof(this.DisplayTasks));
         }
 
         private void LogOut()

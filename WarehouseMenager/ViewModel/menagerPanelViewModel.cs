@@ -156,7 +156,7 @@ namespace WarehouseMenager.ViewModel
         }
 
         //USER DATA AND VERIFICATION
-        private void UserDataTransfer(userModel userData) //method to save user data from loginPanel and verificate it with DB
+        private void UserDataTransfer(userModel userData) //method to save user data from loginPanel
         {
             this.User = userData;
             Username = User.Name + " " + User.Lastname;
@@ -229,18 +229,18 @@ namespace WarehouseMenager.ViewModel
         }
 
         // METHODS FOR ADDING TASKS
-        private async Task AddTasksAsync()        //Error to fix when adding load task task locations ins asinged to empty space it should be assinge to location were prdocut of this task lay and it should check if enught of this item is in warehouse
+        private async Task AddTasksAsync()      
         {
-            if (AddTaskAsyncBusy == true)
+            if (this.AddTaskAsyncBusy == true)
             {
                 MessageBox.Show("You are arleady adding task.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-      
-            AddTaskAsyncBusy = true;   //put the flag up
+
+            this.AddTaskAsyncBusy = true;   //put the flag up
             await VerifyUser();   //verification of user before adding task
             string TaskType;
-            if (_loadBtn == true)
+            if (this._loadBtn == true)
             {
                 TaskType = "load";
             }
@@ -250,7 +250,7 @@ namespace WarehouseMenager.ViewModel
             }
             //open messebox with confrmtaion of acction
             MessageBoxResult result = MessageBox.Show(
-               $"Task:" + " Type-"+ TaskType + " Ramp-" + _selectedRamp.Name + " Product-" + _selectedProduct.Barcode + " \nAre you sure you want to add " + this._amountInput + " tasks?",
+               $"Task:" + " Type-"+ TaskType + " Ramp-" + this._selectedRamp.Name + " Product-" + this._selectedProduct.Barcode + " \nAre you sure you want to add " + this._amountInput + " tasks?",
                "Confirm Task Addition",
                MessageBoxButton.YesNo,
                MessageBoxImage.Question);
@@ -258,49 +258,49 @@ namespace WarehouseMenager.ViewModel
             // If user press 'No"
             if (result != MessageBoxResult.Yes)
             {
-               AddTaskAsyncBusy = false;
+                this.AddTaskAsyncBusy = false;
                return;
             }
 
             int AmmountOfErrors = 0; // int for tracking num of errors when inserting data to db
-            if (_loadBtn == true)  //when task type is load
+            if (this._loadBtn == true)  //when task type is load
             {
-                List<int> LocationsIdOfproduct = await _locationsServise.GetLocatonsIdOfProductAsync(_selectedProduct.Barcode, _amountInput); //get list of locations where product is
-                if(LocationsIdOfproduct.Count < _amountInput) //check if there is enough of this product in warehouse
+                List<int> LocationsIdOfproduct = await _locationsServise.GetLocatonsIdOfProductAsync(this._selectedProduct.Barcode, this._amountInput); //get list of locations where product is
+                if(LocationsIdOfproduct.Count < this._amountInput) //check if there is enough of this product in warehouse
                 {
                     MessageBox.Show("Not enough of this product in warehouse.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    AddTaskAsyncBusy = false;
+                    this.AddTaskAsyncBusy = false;
                     return;
                 }
                 
                 foreach(int space in LocationsIdOfproduct)   //adding task for every item and his location
                 {
-                    bool TaksInsertSucces = await _taskService.InsertTaskAsync(TaskType, _selectedRamp.Name, _selectedProduct.Barcode, space);
+                    bool TaksInsertSucces = await _taskService.InsertTaskAsync(TaskType, this._selectedRamp.Name, this._selectedProduct.Barcode, space);
                     if (TaksInsertSucces == false)
                     {
                         AmmountOfErrors++;
-                        Console.WriteLine("Error adding task to DB. Task-" + TaskType + " " + _selectedRamp.Name + " " + _selectedProduct.Barcode + " " + space);
+                        Console.WriteLine("Error adding task to DB. Task-" + TaskType + " " + this._selectedRamp.Name + " " + this._selectedProduct.Barcode + " " + space);
                     }
                 }
             }
-            else if(_loadBtn == false)  // when task type is unload
+            else if(this._loadBtn == false)  // when task type is unload
             {
                 await CountFreeWarehousesSpaces();  //update number off free spaces in warehouse
                 if (this._amountInput > this.FreeSpacesInWarehous)  //if there is no enought space in warehouse
                 {
                     MessageBox.Show("No enough space in warehouse.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    AddTaskAsyncBusy = false;
+                    this.AddTaskAsyncBusy = false;
                     return;
                 }
                 
                 List<int> EmptySpaces = await _locationsServise.XIdsOfEmptySpacesAsync(this._amountInput); //get list of empty spaces
                 foreach (int space in EmptySpaces)
                 {
-                    bool TaskInsertSucces = await _taskLocationCoordinatorService.AddUnloadTaskAsync(TaskType, _selectedRamp.Name, _selectedProduct.Barcode, space); //add task to DB and update location
+                    bool TaskInsertSucces = await _taskLocationCoordinatorService.AddUnloadTaskAsync(TaskType, this._selectedRamp.Name, this._selectedProduct.Barcode, space); //add task to DB and update location
                     if (TaskInsertSucces == false)
                     {
                         AmmountOfErrors++;
-                        Console.WriteLine("Error adding task to DB. Task-" + TaskType + " " + _selectedRamp.Name + " " + _selectedProduct.Barcode + " " + space);
+                        Console.WriteLine("Error adding task to DB. Task-" + TaskType + " " + this._selectedRamp.Name + " " + this._selectedProduct.Barcode + " " + space);
                     }
                 }
             }
@@ -315,7 +315,7 @@ namespace WarehouseMenager.ViewModel
 
             
             RefreshDataAsync();
-            AddTaskAsyncBusy = false;         
+            this.AddTaskAsyncBusy = false;         
         }
         private bool AddTaskInputFilled() //function to check is all input fields are filled with valid data
         {
@@ -332,7 +332,7 @@ namespace WarehouseMenager.ViewModel
             {
                 AllFieldsFilled = false;
             }
-            if((_unloadBtn == false || _loadBtn == false) && (_unloadBtn == _loadBtn) ) //radio button isn't check
+            if((this._unloadBtn == false || this._loadBtn == false) && (this._unloadBtn == this._loadBtn) ) //radio button isn't check
             {
                 AllFieldsFilled = false;
             }
@@ -344,15 +344,15 @@ namespace WarehouseMenager.ViewModel
         }
 
         //METHODS FOR DELETING TASKS
-        private async Task DeleteTaskAsync()                 // Error to fix deleting task it is unload shoud be clearing locations and deleting a task in in one sql sesion
+        private async Task DeleteTaskAsync()
         {
-            if (DeleteTaskAsyncBusy == true) //onyl one delete can run in the same time
+            if (this.DeleteTaskAsyncBusy == true) //onyl one delete can run in the same time
             {
                 MessageBox.Show("You are arleady deleting tasks.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            ObservableCollection<taskModel> TasksToDelete = new ObservableCollection<taskModel>(SelectedTasks); //copy of selected tasks so user cant change it while deleting
-            foreach(taskModel task in TasksToDelete) //scaning SelectedTask for finished task u cant delete it
+            ObservableCollection<taskModel> TasksToDelete = new ObservableCollection<taskModel>(this.SelectedTasks); //copy of selected tasks so user cant change it while deleting
+            foreach(taskModel task in TasksToDelete) //scaning SelectedTask for finished tasks you cant delete them
             {
                 if(task.Status == "done")
                 {
@@ -360,21 +360,21 @@ namespace WarehouseMenager.ViewModel
                     return;
                 }
             }
-            DeleteTaskAsyncBusy = true; //flag up
+            this.DeleteTaskAsyncBusy = true; //flag up
             
             await VerifyUser();   //verification of user before deleting task
-            taskDeleteConfirmationDialog conformationDialog = new taskDeleteConfirmationDialog(SelectedTasks);
-            bool? result = conformationDialog.ShowDialog();
-            if (result == false) 
+            taskDeleteConfirmationDialog conformationDialog = new taskDeleteConfirmationDialog(this.SelectedTasks);
+            bool? result = conformationDialog.ShowDialog(); 
+            if (result == false) //if user press cancel
             {
-                DeleteTaskAsyncBusy = false;
+                this.DeleteTaskAsyncBusy = false;
                 return;
             }
             int AmmountOfErrors = 0;
 
-            foreach (var task in TasksToDelete)
+            foreach (var task in TasksToDelete)    //deleting tasks
             {
-                if(task.Type == "load")
+                if(task.Type == "load")  //if task is load we only delete it from DB
                 {
                     bool TaskDeleteSucces = await _taskService.DeleteTaskAsync(task);
                     if (TaskDeleteSucces == false)
@@ -382,7 +382,7 @@ namespace WarehouseMenager.ViewModel
                         AmmountOfErrors++;
                         Console.WriteLine("Error deleting task from DB. Task-" + task.Id);
                     }
-                }else if(task.Type== "unload")
+                }else if(task.Type== "unload")  //if task is unload we delete it from DB and update location
                 {
                     bool LocationUpdateSucces = await _taskLocationCoordinatorService.DeleteUnloadTaskAsync(task);
                     if (LocationUpdateSucces == false)

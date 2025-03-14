@@ -29,7 +29,7 @@ namespace WarehouseMenager.ViewModel.DialogViewModel
             EditProduct = new ObservableCollection<productModel>();
             this._dialog = dialog;
             this.OrginalProduct.Add(orginal);
-            this.EditProduct.Add(new productModel
+            this.EditProduct.Add(new productModel   //make copy of orginal product
             {
                 Barcode = orginal.Barcode,
                 Category = orginal.Category,
