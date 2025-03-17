@@ -10,7 +10,7 @@
         <StackPanel Margin="30">
             <Label FontSize="32" HorizontalAlignment="Center">Editing panel</Label>
             <Label FontSize="24">Orginal</Label>
-            <DataGrid Margin="10" Height="50"
+            <DataGrid Margin="10" 
             ItemsSource="{Binding OrginalProduct}"
             CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True"
             AutoGenerateColumns="False">
@@ -19,11 +19,22 @@
                     <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" Width="8*"/>
                     <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="15*"/>
                     <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" Width="20*"/>
-                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="32*"/>
+                    <DataGridTemplateColumn Header="Description"  Width="32*" >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                    <TextBlock Text="{Binding Description}"
+                                        TextWrapping="Wrap"
+                                        VerticalAlignment="Top"
+                                        MaxHeight="150" />
+                                </ScrollViewer>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
             <Label FontSize="24">Edit data</Label>
-            <DataGrid Margin="10" Height="50" 
+            <DataGrid Margin="10" 
             ItemsSource="{Binding EditProduct}"
             CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="False"
             AutoGenerateColumns="False">
@@ -32,7 +43,18 @@
                     <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" Width="8*"/>
                     <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="15*"/>
                     <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" Width="20*" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="32*"/>
+                    <DataGridTemplateColumn Header="Description"  Width="32*" >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                    <TextBlock Text="{Binding Description}"
+                                        TextWrapping="Wrap"
+                                        VerticalAlignment="Top"
+                                        MaxHeight="150" />
+                                </ScrollViewer>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >

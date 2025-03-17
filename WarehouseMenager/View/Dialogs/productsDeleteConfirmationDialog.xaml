@@ -17,7 +17,18 @@
                 <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" Width="8*"/>
                 <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="15*"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" Width="20*"/>
-                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="32*"/>
+                <DataGridTemplateColumn Header="Description"  Width="32*" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <TextBlock Text="{Binding Description}"
+                                TextWrapping="Wrap"
+                                VerticalAlignment="Top"
+                                MaxHeight="150" />
+                            </ScrollViewer>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" VerticalAlignment="Bottom">

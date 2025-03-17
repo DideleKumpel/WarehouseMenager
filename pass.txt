@@ -1,0 +1,1 @@
+"Server=localhost;Database=warehouse;Uid=root;Pwd=;"==>ConfigurationManager.ConnectionStrings["WarehouseDb"].ConnectionString

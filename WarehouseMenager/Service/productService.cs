@@ -38,6 +38,7 @@ namespace WarehouseMenager.Service
                                     Description = reader.GetString(3),
                                     Barcode = reader.GetString(4)
                                 };
+                                product.NumberOfItemsInWarehouse = await CountNumberOfItemInWarehouse(product.Barcode);
                                 productList.Add(product);
                             }
                             return productList;
@@ -185,6 +186,28 @@ namespace WarehouseMenager.Service
                 {
                     Console.WriteLine("Error updating data in DB: " + NoConnection.Message);
                     return false;
+                }
+            }
+        }
+        public async Task<int> CountNumberOfItemInWarehouse(string Barcode)
+        {
+            using (var connetion = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connetion.OpenAsync();
+                    string query = "SELECT COUNT(*) FROM locations WHERE products_products_id = @Barcode;";
+                    using (var command = new MySqlCommand(query, connetion))
+                    {
+                        command.Parameters.AddWithValue("@Barcode", Barcode);
+                        object result = await command.ExecuteScalarAsync();
+                        int NumOfFreeSpaces = Convert.ToInt32(result);
+                        return NumOfFreeSpaces;
+                    }
+                }
+                catch (Exception NoConnection)
+                {
+                    throw;
                 }
             }
         }
