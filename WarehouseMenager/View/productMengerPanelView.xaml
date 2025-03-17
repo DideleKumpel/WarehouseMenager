@@ -28,7 +28,42 @@
             </Button>
             <Button Width="100" Height="50" Margin="10" Name="BtnRefresh" Command="{Binding RefreshCommand}" >Refresh</Button>
         </StackPanel>
-        <DataGrid Grid.Row="1" Margin="10" 
+        <StackPanel Grid.Row="1" Margin="10" >
+            <StackPanel Orientation="Horizontal" Panel.ZIndex="2">
+                <Expander Margin="0,5" Background="White" Header="Filters">
+                    <Canvas>
+                        <Grid Width="700" Height="120" Background="White">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="80*"/>
+                                <RowDefinition Height="20*"/>
+                            </Grid.RowDefinitions>
+                            <Rectangle Grid.RowSpan="3" Grid.ColumnSpan="2" Stroke="Black"></Rectangle>
+                            <StackPanel Margin="10">
+                                <TextBlock FontSize="12">Barcode:</TextBlock>
+                                <TextBox/>
+                                <TextBlock FontSize="12">Name:</TextBlock>
+                                <TextBox/>
+                            </StackPanel>
+                            <StackPanel Margin="10" Grid.Column="1">
+                                <TextBlock FontSize="12">Category:</TextBlock>
+                                <TextBox/>
+                                <TextBlock FontSize="12">Weight:</TextBlock>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox Width="75"/>
+                                    <TextBlock>-</TextBlock>
+                                    <TextBox Width="75"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <Button Grid.Column="1" Grid.Row="1" Width="60" Height="20" HorizontalAlignment="Right" Margin="10,0">Save</Button>
+                        </Grid>
+                    </Canvas>
+                </Expander>
+            </StackPanel>
+        <DataGrid Grid.Row="1" Height="450"
           ItemsSource="{Binding Products}"
           SelectionMode="Extended"
           SelectionUnit="FullRow"
@@ -54,7 +89,8 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
-        </DataGrid>
+            </DataGrid>
+        </StackPanel>
 
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="10">
             <StackPanel Orientation="Vertical" >
