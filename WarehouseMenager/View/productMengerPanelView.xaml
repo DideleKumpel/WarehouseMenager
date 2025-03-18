@@ -44,27 +44,27 @@
                             <Rectangle Grid.RowSpan="3" Grid.ColumnSpan="2" Stroke="Black"></Rectangle>
                             <StackPanel Margin="10">
                                 <TextBlock FontSize="12">Barcode:</TextBlock>
-                                <TextBox/>
+                                <TextBox Text="{Binding BarcodeFilter,UpdateSourceTrigger=PropertyChanged}"/>
                                 <TextBlock FontSize="12">Name:</TextBlock>
-                                <TextBox/>
+                                <TextBox Text="{Binding NameFilter,UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <StackPanel Margin="10" Grid.Column="1">
                                 <TextBlock FontSize="12">Category:</TextBlock>
-                                <TextBox/>
+                                <TextBox Text="{Binding CategoryFilter,UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBlock FontSize="12">Weight:</TextBlock>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBox Width="75"/>
-                                    <TextBlock>-</TextBlock>
-                                    <TextBox Width="75"/>
+                                    <TextBox Width="75" PreviewTextInput="IsNumber" MaxLength="6" Text="{Binding MinWeightFilter,UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBlock >-</TextBlock>
+                                    <TextBox Width="75" PreviewTextInput="IsNumber" MaxLength="6" Text="{Binding MaxWeightFilter,UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
                             </StackPanel>
-                            <Button Grid.Column="1" Grid.Row="1" Width="60" Height="20" HorizontalAlignment="Right" Margin="10,0">Save</Button>
+                            <Button Grid.Column="1" Grid.Row="1" Width="60" Height="20" HorizontalAlignment="Right" Margin="10,0" Command="{Binding SaveFiltersCommand}">Save</Button>
                         </Grid>
                     </Canvas>
                 </Expander>
             </StackPanel>
         <DataGrid Grid.Row="1" Height="450"
-          ItemsSource="{Binding Products}"
+          ItemsSource="{Binding ProductDisplay}"
           SelectionMode="Extended"
           SelectionUnit="FullRow"
           SelectionChanged="DataGrid_SelectionChanged"

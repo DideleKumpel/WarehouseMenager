@@ -11,7 +11,8 @@ using WarehouseMenager.MVVM;
 using WarehouseMenager.Service;
 using WarehouseMenager.View.Dialogs;
 using WarehouseMenager.ViewModel.DialogViewModel;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+//using static System.Net.Mime.MediaTypeNames;
+//using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace WarehouseMenager.ViewModel
 {
@@ -25,6 +26,7 @@ namespace WarehouseMenager.ViewModel
 
         //DISPLAY AND DB DATA VARIABULES
         public ObservableCollection<productModel> Products { get; set; }
+        public ObservableCollection<productModel> ProductDisplay { get; set; }
         private ObservableCollection<productModel> _selectedProducts = new ObservableCollection<productModel>();
         public ObservableCollection<productModel> SelectedProducts
         {
@@ -118,6 +120,18 @@ namespace WarehouseMenager.ViewModel
             }
         }
 
+        //Filters
+        private string _nameFilter;
+        public string NameFilter { get; set; }
+        private string _barcodeFilter;
+        public string BarcodeFilter{ get; set; }
+        private string _categoryFiltr;
+        public string CategoryFilter { get; set; }
+        private double _minWeightFilter;
+        public double MinWeightFilter { get; set; }
+        private double _maxWeightFilter;
+        public double MaxWeightFilter { get; set; }
+
         //BUTTONS
 
         public ICommand LogOutCommand => new RelayCommand(execute => LogOut());
@@ -127,6 +141,8 @@ namespace WarehouseMenager.ViewModel
         public ICommand RefreshCommand => new RelayCommand(execute => RefreshDataAsync());
         public ICommand SwitchTaskMengerView => new RelayCommand(execute => SwitchViewToTaskPanel());
         public ICommand SwitchOperatorPanelView => new RelayCommand(execute => SwitchViewToOperatorPanel());
+        public ICommand SaveFiltersCommand => new RelayCommand(execute => SaveFilters());
+        public ICommand ResetFiltersCommand => new RelayCommand(execute => ResetFilters());
 
 
         //FLAGS FOR BTN SO ONLY 1 CAN RUN IN THE SAME TIME
@@ -179,6 +195,7 @@ namespace WarehouseMenager.ViewModel
         {
             await VerifyUser();
             await LoadProductsAsync();
+            SaveFilters();
         }
 
         private async Task LoadProductsAsync()
@@ -436,6 +453,68 @@ namespace WarehouseMenager.ViewModel
             Mediator.NotifyViewModel1FullNameChanged(User);
             viewModel.RefreshDataAsync();
         }
+        private void SaveFilters()
+        {
+            if (NameFilter == null)
+                _nameFilter = "";
+            else
+                _nameFilter = NameFilter.ToUpper();
 
+            if (CategoryFilter == null)
+                _categoryFiltr = "";
+            else
+                _categoryFiltr = CategoryFilter.ToUpper();
+
+            if (BarcodeFilter == null)
+                _barcodeFilter = "";
+            else
+                _barcodeFilter = BarcodeFilter.ToUpper();
+
+            if (MinWeightFilter <= MaxWeightFilter)
+            {
+                if (MinWeightFilter < 0)
+                    _minWeightFilter = 0;
+                else
+                    _minWeightFilter = MinWeightFilter;
+
+                if (MaxWeightFilter <= 0)
+                    _maxWeightFilter = double.MaxValue;
+                else
+                    _maxWeightFilter = MaxWeightFilter;
+
+            }
+            else
+            {
+                MessageBox.Show("Min weight is bigger than max weight", "Info", MessageBoxButton.OK);
+            }
+            ApplyFiltres();
+        }
+        private void ResetFilters() 
+        {
+            NameFilter = _nameFilter = "";
+            Category = _categoryFiltr = "";
+            BarcodeFilter = _barcodeFilter = "";
+            MinWeightFilter = _minWeightFilter = 0;
+            MaxWeightFilter = _maxWeightFilter = double.MaxValue;
+            SaveFilters();
+        }
+
+        private void ApplyFiltres()
+        {
+            ProductDisplay = new ObservableCollection<productModel> { };
+            foreach(productModel product in Products)
+            {
+                if(product.Name.IndexOf(_nameFilter) < 0)
+                    continue;
+                if (product.Category.IndexOf(_categoryFiltr) < 0)
+                    continue;
+                if (product.Barcode.IndexOf(_barcodeFilter) < 0)
+                    continue;
+                if (!((product.Weight >= _minWeightFilter) && (product.Weight <= _maxWeightFilter)))
+                    continue;
+                ProductDisplay.Add(product);
+            }
+            OnPropertChanged(nameof(ProductDisplay));
+        }
     }
 }

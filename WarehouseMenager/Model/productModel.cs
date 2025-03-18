@@ -1,4 +1,7 @@
 ﻿
+using Mysqlx.Crud;
+using System;
+
 namespace WarehouseMenager.Model
 {
     public class productModel
@@ -21,6 +24,20 @@ namespace WarehouseMenager.Model
                     return NumberOfItemsInWarehouse.ToString();
                 }
             }
+        }
+
+        public productModel(){}
+        public productModel(productModel other)
+        {
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+
+            Name = other.Name;
+            Weight = other.Weight;
+            Category = other.Category;
+            Barcode = other.Barcode;
+            Description = other.Description;
+            NumberOfItemsInWarehouse = other.NumberOfItemsInWarehouse;
         }
     }
 }
