@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:WarehouseMenager.View"
              mc:Ignorable="d" 
              d:DesignHeight="650" d:DesignWidth="1200">
-    <Grid Background="White">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition  Width="70*"/>
             <ColumnDefinition Width="30*" />
