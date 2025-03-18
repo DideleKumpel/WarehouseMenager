@@ -19,13 +19,13 @@
                 <Label FontSize="24">You are current in:</Label>
                 <Label FontSize="24">TASK MANAGER</Label>
             </StackPanel>
-            <Button Width="100" Height="50" Margin="10" Name="BtnProductMenagerView"  Command="{Binding SwitchPorductMengerView}" >
+            <Button Width="100" Height="60" Margin="10" Name="BtnProductMenagerView"  Command="{Binding SwitchPorductMengerView}" >
                 <TextBlock Padding="3,3,3,3" TextWrapping="Wrap" TextAlignment="Center" Text="Swich to product menager" />
             </Button>
-            <Button Width="100" Height="50" Margin="10" Name="BtnOperatorView"  Command="{Binding SwitchOperatorPanelView}" >
+            <Button Width="100" Height="60" Margin="10" Name="BtnOperatorView"  Command="{Binding SwitchOperatorPanelView}" >
                 <TextBlock Padding="3,3,3,3" TextWrapping="Wrap" TextAlignment="Center" Text="Swich to operator panel" />
             </Button>
-            <Button Width="100" Height="50" Margin="10" Name="BtnRefresh" Command="{Binding RefreshCommand}" >Refresh</Button>
+            <Button Width="100" Height="60" Margin="10" Name="BtnRefresh" Command="{Binding RefreshCommand}" >Refresh</Button>
         </StackPanel>
         <DataGrid Grid.Row="1" Margin="10" 
               ItemsSource="{Binding Tasks}"

@@ -22,10 +22,10 @@
                 <Label FontSize="24">You are current in:</Label>
                 <Label FontSize="24">OPERATOR PANEL</Label>
             </StackPanel>
-            <Button Height="50" Width="100" Margin="15,0,0,0" Command="{Binding SwitchToTaskManagerCommand}" Visibility="{Binding ManagerButtonsRender}">
+            <Button Height="65" Width="100" Margin="15,0,0,0" Command="{Binding SwitchToTaskManagerCommand}" Visibility="{Binding ManagerButtonsRender}">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center"> Switch to task menager panel</TextBlock>
                 </Button>
-            <Button Height="50" Width="100" Margin="15,0,0,0" Command="{Binding SwitchToProductManagerCommand}" Visibility="{Binding ManagerButtonsRender}">
+            <Button Height="65" Width="100" Margin="15,0,0,0" Command="{Binding SwitchToProductManagerCommand}" Visibility="{Binding ManagerButtonsRender}">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center"> Switch to product menager panel</TextBlock>
                 </Button>
             </StackPanel>
