@@ -20,13 +20,13 @@
                 <Label FontSize="24">You are current in:</Label>
                 <Label FontSize="24">PRODUCT MANAGER</Label>
             </StackPanel>
-            <Button Width="100" Height="50" Margin="10" Name="BtnProductMenagerView"  Command="{Binding SwitchTaskMengerView}" >
+            <Button Width="100" Height="65" Margin="10" Name="BtnProductMenagerView"  Command="{Binding SwitchTaskMengerView}" >
                 <TextBlock Padding="3,3,3,3" TextWrapping="Wrap" TextAlignment="Center" Text="Swich to task manager" />
             </Button>
-            <Button Width="100" Height="50" Margin="10" Name="BtnOperatorView"  Command="{Binding SwitchOperatorPanelView}" >
+            <Button Width="100" Height="65" Margin="10" Name="BtnOperatorView"  Command="{Binding SwitchOperatorPanelView}" >
                 <TextBlock Padding="3,3,3,3" TextWrapping="Wrap" TextAlignment="Center" Text="Swich to operator panel" />
             </Button>
-            <Button Width="100" Height="50" Margin="10" Name="BtnRefresh" Command="{Binding RefreshCommand}" >Refresh</Button>
+            <Button Width="100" Height="65" Margin="10" Name="BtnRefresh" Command="{Binding RefreshCommand}" >Refresh</Button>
         </StackPanel>
         <StackPanel Grid.Row="1" Margin="10" >
             <StackPanel Orientation="Horizontal" Panel.ZIndex="2">

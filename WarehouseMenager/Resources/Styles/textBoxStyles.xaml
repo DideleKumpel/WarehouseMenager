@@ -1,0 +1,40 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style TargetType="TextBox">
+        <Setter Property="Background" Value="{DynamicResource SecondaryBackgroundColorBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryColorrBrush}" />
+
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryColorBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+
+                    <!--  Broder for round of the corrners !-->
+                    <Border Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}" 
+                        CornerRadius="6">
+                        <ScrollViewer x:Name="PART_ContentHost" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="Background" Value="{DynamicResource PrimaryColorBrush}"/>
+            </Trigger>
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True"/>
+                    <Condition Property="IsFocused" Value="False"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="{DynamicResource AccentColorBrush}"/>
+            </MultiTrigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>
