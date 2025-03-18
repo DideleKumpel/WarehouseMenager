@@ -48,7 +48,8 @@
     </ControlTemplate>
 
     <Style x:Key="{x:Type ComboBox}" TargetType="{x:Type ComboBox}">
-        <Setter Property="SnapsToDevicePixels" Value="true"/>
+		<Setter Property="Cursor" Value="Hand"/>
+		<Setter Property="SnapsToDevicePixels" Value="true"/>
         <Setter Property="OverridesDefaultStyle" Value="true"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
@@ -128,6 +129,7 @@
                             <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
                             <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
                         </Trigger>
+						
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -136,7 +138,6 @@
         </Style.Triggers>
     </Style>
 
-    <!-- SimpleStyles: ComboBoxItem -->
     <Style x:Key="{x:Type ComboBoxItem}" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="true"/>
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryColorrBrush}"/>
