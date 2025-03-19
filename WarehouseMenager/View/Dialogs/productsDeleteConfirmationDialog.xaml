@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              Title="Confirm Deletion" Height="400" Width="800" WindowStartupLocation="CenterOwner">
     <Grid>
-        <TextBlock Text="Are you sure you want to delete the selected tasks?" FontSize="16" FontWeight="Bold" Margin="10"/>
+        <TextBlock Text="Are you sure you want to delete the selected products?" FontSize="16" FontWeight="Bold" Margin="10"/>
         <DataGrid ItemsSource="{Binding SelectedProducts}" 
               AutoGenerateColumns="False" 
               Margin="10,40,10,50"
