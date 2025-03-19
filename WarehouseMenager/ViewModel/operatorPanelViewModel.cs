@@ -90,11 +90,11 @@ namespace WarehouseMenager.ViewModel
         public AsyncRelayCommand FinishTaskCommand { get; }
         public AsyncRelayCommand AssigneTaskCommand { get; }
         public AsyncRelayCommand AbandonTaskCommand { get; }
-        //public AsyncRelayCommand SwitchToTaskManagerCommand { get; }
         public ICommand SwitchToTaskManagerCommand => new RelayCommand(execute => SwitchToTaskManager());
         public ICommand SwitchToProductManagerCommand => new RelayCommand(execute => SwitchToProductManager());
         public ICommand LogOutCommand => new RelayCommand(execute => LogOut());
         public ICommand RefreshCommand => new RelayCommand (execute => RefreshDataAsync());
+        public ICommand SwitchThemeCommand => new RelayCommand(execute => SwitchTheme());
 
         //Flags
         private bool FinishTaskIsBusy = false;
@@ -119,7 +119,6 @@ namespace WarehouseMenager.ViewModel
             FinishTaskCommand = new AsyncRelayCommand ( async () => await FinishTaskAsync(), () => CanExecuteFinishTaskCommand());
             AssigneTaskCommand = new AsyncRelayCommand(async () => await AssingedToTaskAsync(), () => CanExecuteAssingedToTaskCommand());
             AbandonTaskCommand = new AsyncRelayCommand(async () => await AbandonTaskAsync(), () => CanExecuteAbandonTaskCommand());
-            //SwitchToTaskManagerCommand = new AsyncRelayCommand(async () => await Task.Run(() => SwitchToTaskManager()));
         }
 
         //USER DATA AND VERIFICATION
@@ -418,6 +417,10 @@ namespace WarehouseMenager.ViewModel
             Application.Current.MainWindow.DataContext = viewModel;
             Mediator.NotifyViewModel1FullNameChanged(User);
             viewModel.RefreshDataAsync();   
+        }
+        private void SwitchTheme()
+        {
+            appThemeService.Instance.ToggleTheme();
         }
     }
 }

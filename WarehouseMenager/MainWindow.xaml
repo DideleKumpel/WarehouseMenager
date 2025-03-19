@@ -7,6 +7,7 @@
         xmlns:viewmodels="clr-namespace:WarehouseMenager.ViewModel"
         xmlns:views="clr-namespace:WarehouseMenager.View"
         mc:Ignorable="d"
+        Icon="/Resources/Icons/mainIcon.ico"
         Title="Warehouse Menager" Height="650" Width="1200">
     <Window.Resources>
         <DataTemplate x:Name="loginPanelViewTemplate" DataType="{x:Type viewmodels:loginPanelViewModel}">

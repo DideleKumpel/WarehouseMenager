@@ -16,8 +16,10 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-            
-            <StackPanel Orientation="Horizontal">
+
+        <Button Grid.Column="1" Grid.Row="2" Style="{StaticResource ThemeButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Command="{Binding SwitchThemeCommand}"/>
+
+        <StackPanel Orientation="Horizontal">
             <StackPanel Margin="20,0,20,0">
                 <Label FontSize="24">You are current in:</Label>
                 <Label FontSize="24">OPERATOR PANEL</Label>

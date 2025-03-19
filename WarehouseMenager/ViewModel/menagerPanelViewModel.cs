@@ -136,6 +136,7 @@ namespace WarehouseMenager.ViewModel
         public ICommand RefreshCommand => new RelayCommand(execute => RefreshDataAsync());
         public ICommand SwitchPorductMengerView => new RelayCommand(execute => SwitchViewToProductMenagerPanel());
         public ICommand SwitchOperatorPanelView => new RelayCommand(execute => SwitchViewToOperatorPanel());
+        public ICommand SwitchThemeCommand => new RelayCommand(execute => SwitchTheme());
 
         //FLAGS FOR BTN SO ONLY 1 CAN RUN IN THE SAME TIME
         private bool AddTaskAsyncBusy = false;
@@ -454,6 +455,11 @@ namespace WarehouseMenager.ViewModel
         private async Task CountNumberOfSpaces()
         {
             this.AllSpacesInWarehouse = await _locationsServise.LoadNumberOfLocationsAsync();
+        }
+
+        private void SwitchTheme()
+        {
+            appThemeService.Instance.ToggleTheme();
         }
     }
 }

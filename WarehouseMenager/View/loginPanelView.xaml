@@ -6,7 +6,9 @@
              xmlns:local="clr-namespace:WarehouseMenager.View"
              mc:Ignorable="d" 
              d:DesignHeight="650" d:DesignWidth="1200">
+    
     <Grid>
+        <Button Style="{StaticResource ThemeButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Command="{Binding SwitchThemeCommand}"/>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Height="350">
             <Label Width="250" FontSize="64" HorizontalAlignment="Center" Margin="0,0,0,10">Log in</Label>
             <Label Width="250" FontSize="24">Username</Label>

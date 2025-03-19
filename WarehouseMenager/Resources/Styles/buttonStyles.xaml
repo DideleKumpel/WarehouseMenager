@@ -42,4 +42,30 @@
         </Setter>
     </Style>
 
+    <Style x:Key="ThemeButtonStyle" TargetType="Button">
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryColorrBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                        <!-- Obrazek dynamiczny z ResourceDictionary -->
+                        <Image Source="{DynamicResource LightbulbIcon}"
+                               Width="32" Height="32"
+                               Margin="0,0,5,0"/>
+
+                        <!-- Tekst (możesz wrzucić ContentPresenter zamiast TextBlock) -->
+                        <ContentPresenter VerticalAlignment="Center" />
+
+                    </StackPanel>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

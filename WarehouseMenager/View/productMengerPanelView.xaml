@@ -15,6 +15,9 @@
             <RowDefinition Height="22*"/>
             <RowDefinition Height="78*"/>
         </Grid.RowDefinitions>
+
+        <Button Grid.Column="1" Grid.Row="1" Style="{StaticResource ThemeButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Command="{Binding SwitchThemeCommand}"/>
+
         <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10">
             <StackPanel Margin="0,0,20,0">
                 <Label FontSize="24">You are current in:</Label>

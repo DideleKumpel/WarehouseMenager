@@ -119,6 +119,7 @@
     <Compile Include="MVVM\Mediator.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
+    <Compile Include="Service\appThemeService.cs" />
     <Compile Include="Service\locationsServise.cs" />
     <Compile Include="Service\productService.cs" />
     <Compile Include="Service\rampService.cs" />
@@ -280,7 +281,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\Icons\" />
+    <Resource Include="Resources\Icons\mainIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\lightbulbOFF.png" />
+    <Resource Include="Resources\Icons\lightbulbOn.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

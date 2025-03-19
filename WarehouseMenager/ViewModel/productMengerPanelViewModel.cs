@@ -143,6 +143,7 @@ namespace WarehouseMenager.ViewModel
         public ICommand SwitchOperatorPanelView => new RelayCommand(execute => SwitchViewToOperatorPanel());
         public ICommand SaveFiltersCommand => new RelayCommand(execute => SaveFilters());
         public ICommand ResetFiltersCommand => new RelayCommand(execute => ResetFilters());
+        public ICommand SwitchThemeCommand => new RelayCommand(execute => SwitchTheme());
 
 
         //FLAGS FOR BTN SO ONLY 1 CAN RUN IN THE SAME TIME
@@ -434,25 +435,7 @@ namespace WarehouseMenager.ViewModel
             EditCommand.RaiseCanExecuteChanged();
         }
 
-        // OTHER METHODS
-        private void LogOut()
-        {
-            Application.Current.MainWindow.DataContext = new loginPanelViewModel();
-        }
-        private void SwitchViewToTaskPanel() 
-        {
-            menagerPanelViewModel viewModel = new menagerPanelViewModel();
-            Application.Current.MainWindow.DataContext = viewModel;
-            Mediator.NotifyViewModel1FullNameChanged(User);
-            viewModel.RefreshDataAsync();   //loads tasks, products, ramps, locations data from databese
-        }
-        private void SwitchViewToOperatorPanel() 
-        {
-            operatorPanelViewModel viewModel = new operatorPanelViewModel();
-            Application.Current.MainWindow.DataContext = viewModel;
-            Mediator.NotifyViewModel1FullNameChanged(User);
-            viewModel.RefreshDataAsync();
-        }
+        // METHODS FOR FILTERS
         private void SaveFilters()
         {
             if (NameFilter == null)
@@ -515,6 +498,32 @@ namespace WarehouseMenager.ViewModel
                 ProductDisplay.Add(product);
             }
             OnPropertChanged(nameof(ProductDisplay));
+        }
+
+
+        // OTHER METHODS
+        private void LogOut()
+        {
+            Application.Current.MainWindow.DataContext = new loginPanelViewModel();
+        }
+        private void SwitchViewToTaskPanel() 
+        {
+            menagerPanelViewModel viewModel = new menagerPanelViewModel();
+            Application.Current.MainWindow.DataContext = viewModel;
+            Mediator.NotifyViewModel1FullNameChanged(User);
+            viewModel.RefreshDataAsync();   //loads tasks, products, ramps, locations data from databese
+        }
+        private void SwitchViewToOperatorPanel() 
+        {
+            operatorPanelViewModel viewModel = new operatorPanelViewModel();
+            Application.Current.MainWindow.DataContext = viewModel;
+            Mediator.NotifyViewModel1FullNameChanged(User);
+            viewModel.RefreshDataAsync();
+        }
+
+        private void SwitchTheme()
+        {
+            appThemeService.Instance.ToggleTheme();
         }
     }
 }

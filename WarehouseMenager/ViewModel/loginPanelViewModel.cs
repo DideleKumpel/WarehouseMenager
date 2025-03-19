@@ -17,16 +17,19 @@ namespace WarehouseMenager.ViewModel
     public class loginPanelViewModel: ViewModelBase
     {
         private readonly userService _userService;
-
         public string Username { get; set; }
         public string Password { get; set; }
         public ICommand LoginCommand { get; }
+        public ICommand SwitchThemeCommand => new RelayCommand(execute => SwitchTheme());
+
         private bool LoginAsyncBusy = false;  // flag to check if LoginAsync are still working 
 
         public loginPanelViewModel()
         {
             _userService = new userService();
+
             LoginCommand = new RelayCommand(async (_) => await LoginAsync());
+
         }
 
         private async Task LoginAsync()
@@ -77,6 +80,11 @@ namespace WarehouseMenager.ViewModel
                 }
                 LoginAsyncBusy = false;  //put flog down
             }
+        }
+
+        private void SwitchTheme()
+        {
+            appThemeService.Instance.ToggleTheme();
         }
     }
 }
