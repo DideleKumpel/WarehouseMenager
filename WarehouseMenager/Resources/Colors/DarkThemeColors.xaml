@@ -11,6 +11,8 @@
     <Color x:Key="TextPrimaryColor">#FFFFFFFF</Color>
     <Color x:Key="TextSecondaryColor">#000000</Color>
 
+    <Color x:Key="DataGirdCellFocusBorderColor">#FFFFFFFF</Color>
+
     <SolidColorBrush  x:Key="PrimaryColorBrush" Color="{StaticResource PrimaryColor}"/>
     <SolidColorBrush  x:Key="SecondaryColorBrush" Color="{StaticResource SecondaryColor}"/>
     <SolidColorBrush  x:Key="AccentColorBrush" Color="{StaticResource AccentColor}"/>
@@ -21,4 +23,7 @@
 
     <SolidColorBrush  x:Key="TextPrimaryColorrBrush" Color="{StaticResource TextPrimaryColor}"/>
     <SolidColorBrush  x:Key="TextSecondaryColorBrush" Color="{StaticResource TextSecondaryColor}"/>
+
+    <SolidColorBrush x:Key="DataGirdCellFocusBorderColorBrush" Color="{StaticResource DataGirdCellFocusBorderColor}"/>
+
 </ResourceDictionary>
