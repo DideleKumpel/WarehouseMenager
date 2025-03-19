@@ -492,7 +492,7 @@ namespace WarehouseMenager.ViewModel
         private void ResetFilters() 
         {
             NameFilter = _nameFilter = "";
-            Category = _categoryFiltr = "";
+            CategoryFilter = _categoryFiltr = "";
             BarcodeFilter = _barcodeFilter = "";
             MinWeightFilter = _minWeightFilter = 0;
             MaxWeightFilter = _maxWeightFilter = double.MaxValue;

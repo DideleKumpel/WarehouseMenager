@@ -9,6 +9,7 @@
         <ResourceDictionary Source="/Resources/Styles/textBlockStyles.xaml"/>
         <ResourceDictionary Source="/Resources/Styles/comboBoxStyles.xaml"/>
         <ResourceDictionary Source="/Resources/Styles/radioButtonStyles.xaml"/>
+        <ResourceDictionary Source="/Resources/Styles/expanderStyles.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

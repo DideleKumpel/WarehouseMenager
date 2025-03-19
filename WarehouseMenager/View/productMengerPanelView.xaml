@@ -30,18 +30,19 @@
         </StackPanel>
         <StackPanel Grid.Row="1" Margin="10" >
             <StackPanel Orientation="Horizontal" Panel.ZIndex="2">
-                <Expander Margin="0,5" Background="White" Header="Filters">
+                <Expander Margin="0,5" Header="Filters">
                     <Canvas>
-                        <Grid Width="700" Height="120" Background="White">
+                        <Border BorderThickness="2" BorderBrush="{DynamicResource PrimaryColorBrush}">
+                            <Grid Width="700" Height="130">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="80*"/>
-                                <RowDefinition Height="20*"/>
+                                <RowDefinition Height="70*"/>
+                                <RowDefinition Height="30*"/>
                             </Grid.RowDefinitions>
-                            <Rectangle Grid.RowSpan="3" Grid.ColumnSpan="2" Stroke="Black"></Rectangle>
+                            <Rectangle Grid.RowSpan="3" Grid.ColumnSpan="2"></Rectangle>
                             <StackPanel Margin="10">
                                 <TextBlock FontSize="12">Barcode:</TextBlock>
                                 <TextBox Text="{Binding BarcodeFilter,UpdateSourceTrigger=PropertyChanged}"/>
@@ -58,8 +59,12 @@
                                     <TextBox Width="75" PreviewTextInput="IsNumber" MaxLength="6" Text="{Binding MaxWeightFilter,UpdateSourceTrigger=PropertyChanged}"/>
                                 </StackPanel>
                             </StackPanel>
-                            <Button Grid.Column="1" Grid.Row="1" Width="60" Height="20" HorizontalAlignment="Right" Margin="10,0" Command="{Binding SaveFiltersCommand}">Save</Button>
-                        </Grid>
+                                <StackPanel  Grid.Column="1" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,3">
+                                    <Button Width="60" Height="30" HorizontalAlignment="Right" Margin="10,0" Command="{Binding SaveFiltersCommand}">Save</Button>
+                                    <Button Width="60" Height="30" HorizontalAlignment="Right" Margin="10,0" Command="{Binding ResetFiltersCommand}">Reset</Button>
+                                </StackPanel>
+                             </Grid>
+                        </Border>
                     </Canvas>
                 </Expander>
             </StackPanel>
