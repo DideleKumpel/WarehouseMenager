@@ -94,7 +94,7 @@ namespace WarehouseMenager.Service
                 try
                 {
                     await connetion.OpenAsync();
-                    string query = "SELECT locations_id FROM locations WHERE products_products_id = @productId LIMIT @number;";
+                    string query = "SELECT locations_id FROM locations WHERE products_products_id = @productId AND IsOnLocation = true LIMIT @number;";
                     using (var command = new MySqlCommand(query, connetion))
                     {
                         command.Parameters.AddWithValue("@productId", productId);
@@ -117,7 +117,7 @@ namespace WarehouseMenager.Service
                 }
             }
         }
-        public async Task<bool> FillLocationAsync(int LocationId, string Barcode)
+        public async Task<bool> AssingLocationAsync(int LocationId, string Barcode)
         {
             using (var connetion = new MySqlConnection(_connectionString))
             {
@@ -151,7 +151,32 @@ namespace WarehouseMenager.Service
                 try
                 {
                     await connetion.OpenAsync();
-                    string query = "UPDATE locations SET products_products_id = NULL WHERE locations_id = @LocationId ;";
+                    string query = "UPDATE locations SET products_products_id = NULL IsOnLocation = NULL WHERE locations_id = @LocationId ;";
+                    using (var command = new MySqlCommand(query, connetion))
+                    {
+                        command.Parameters.AddWithValue("@LocationId", LocationId);
+
+                        int rowsAffected = await command.ExecuteNonQueryAsync(); //Execute update and return number of rows affected
+
+                        return rowsAffected > 0; //if more then 0 rows were affected return true
+
+                    }
+                }
+                catch (Exception NoConnection)
+                {
+                    Console.WriteLine("Error updating data do DB: " + NoConnection.Message);
+                    return false;
+                }
+
+            }
+        }
+        public async Task<bool> FillLocationAsync(int LocationId) {
+            using (var connetion = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connetion.OpenAsync();
+                    string query = "UPDATE locations SET IsOnLocation = TRUE WHERE locations_id = @LocationId ;";
                     using (var command = new MySqlCommand(query, connetion))
                     {
                         command.Parameters.AddWithValue("@LocationId", LocationId);

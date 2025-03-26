@@ -25,6 +25,21 @@ namespace WarehouseMenager.Model
                 }
             }
         }
+        public int NumberOfItemsOnShelf { get; set; }
+        public string NumberOfItemsOnShelfDisplay
+        {
+            get
+            {
+                if (NumberOfItemsOnShelf < 0)
+                {
+                    return "Error";
+                }
+                else
+                {
+                    return NumberOfItemsOnShelf.ToString();
+                }
+            }
+        }
 
         public productModel(){}
         public productModel(productModel other)

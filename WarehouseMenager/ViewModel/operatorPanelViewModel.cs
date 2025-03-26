@@ -209,7 +209,7 @@ namespace WarehouseMenager.ViewModel
                 {
                     if(task.Type == "unload")   //if task is unload we only need to update task status
                     {
-                        bool succes = await _taskService.FinishTaskAsync(task.Id);
+                        bool succes = await _taskLocationCoordinatorService.FinishUnloadTaskAsync(task);
                         if (succes == false)
                         {
                             AmmountsOfErrors++;

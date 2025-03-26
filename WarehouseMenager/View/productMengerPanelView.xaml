@@ -79,12 +79,13 @@
           CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True"
           AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Amount" Binding="{Binding NumberOfITemInWarehouseDisplay}" Width="6*"/>
+                <DataGridTextColumn Header="In stock" Binding="{Binding NumberOfITemInWarehouseDisplay}" Width="6*"/>
+                <DataGridTextColumn Header="On shelfs" Binding="{Binding NumberOfItemsOnShelfDisplay}" Width="6*"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" Width="14*"/>
                 <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="15*"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="15*"/>
                 <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" Width="8*"/>
-                <DataGridTemplateColumn Header="Description"  Width="32*" >
+                <DataGridTemplateColumn Header="Description"  Width="26*" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ScrollViewer VerticalScrollBarVisibility="Auto">

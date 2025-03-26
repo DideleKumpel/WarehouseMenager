@@ -269,7 +269,7 @@ namespace WarehouseMenager.ViewModel
                 List<int> LocationsIdOfproduct = await _locationsServise.GetLocatonsIdOfProductAsync(this._selectedProduct.Barcode, this._amountInput); //get list of locations where product is
                 if(LocationsIdOfproduct.Count < this._amountInput) //check if there is enough of this product in warehouse
                 {
-                    MessageBox.Show("Not enough of this product in warehouse.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Not enough of this product in warehouse or on shelfs.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     this.AddTaskAsyncBusy = false;
                     return;
                 }

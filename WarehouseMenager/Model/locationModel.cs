@@ -9,5 +9,6 @@ namespace WarehouseMenager.Model
         public string Level { get; set; }
         public double MaxCapacity { get; set; }
         public string ItemBarcode { get; set; }
+        public bool IsOnLocation { get; set; }
     }
 }
