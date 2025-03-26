@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,18 +18,19 @@ namespace WarehouseMenager.Service
 
         public async Task<userModel> LoginAsync(string username, string password)
         {
+            string HashedPassword = HashPassword(password);
             using (var connection = new MySqlConnection(_connectionString))
             {
                 try
                 {
                     await connection.OpenAsync();
-                    string query = "SELECT worker_id, name, lastname, login, password, role FROM worker WHERE login = @username AND password = @password";
+                    string query = "SELECT worker_id, name, lastname, login, password, role FROM worker WHERE login = @username AND password = @HashedPassword";
 
                     using (var command = new MySqlCommand(query, connection))
                     {
                         // Zabezpieczenie przed SQL Injection
                         command.Parameters.AddWithValue("@username", username);
-                        command.Parameters.AddWithValue("@password", password);
+                        command.Parameters.AddWithValue("@HashedPassword", HashedPassword);
 
                         using (var reader = await command.ExecuteReaderAsync())
                         {
@@ -40,7 +42,7 @@ namespace WarehouseMenager.Service
                                     Name = reader.GetString(1),
                                     Lastname = reader.GetString(2),
                                     Username = reader.GetString(3),
-                                    Password = reader.GetString(4),
+                                    Password = password,
                                     Role = reader.GetString(5)
                                 };
                             }
@@ -53,6 +55,16 @@ namespace WarehouseMenager.Service
                 }
             }
             return null;
+        }
+
+        public string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(password);
+                var hash = sha256.ComputeHash(bytes);
+                return Convert.ToBase64String(hash);
+            }
         }
     }
 }
