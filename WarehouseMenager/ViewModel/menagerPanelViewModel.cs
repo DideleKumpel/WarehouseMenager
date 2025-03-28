@@ -377,7 +377,7 @@ namespace WarehouseMenager.ViewModel
             {
                 if(task.Type == "load")  //if task is load we only delete it from DB
                 {
-                    bool TaskDeleteSucces = await _taskService.DeleteTaskAsync(task);
+                    bool TaskDeleteSucces = await _taskLocationCoordinatorService.DeleteLoadTaskAsync(task);
                     if (TaskDeleteSucces == false)
                     {
                         AmmountOfErrors++;
