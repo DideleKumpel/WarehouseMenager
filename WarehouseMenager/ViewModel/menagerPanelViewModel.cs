@@ -276,7 +276,7 @@ namespace WarehouseMenager.ViewModel
                 
                 foreach(int space in LocationsIdOfproduct)   //adding task for every item and his location
                 {
-                    bool TaksInsertSucces = await _taskService.InsertTaskAsync(TaskType, this._selectedRamp.Name, this._selectedProduct.Barcode, space);
+                    bool TaksInsertSucces = await _taskLocationCoordinatorService.AddTaskAsync(TaskType, this._selectedRamp.Name, this._selectedProduct.Barcode, space);
                     if (TaksInsertSucces == false)
                     {
                         AmmountOfErrors++;
@@ -297,7 +297,7 @@ namespace WarehouseMenager.ViewModel
                 List<int> EmptySpaces = await _locationsServise.XIdsOfEmptySpacesAsync(this._amountInput); //get list of empty spaces
                 foreach (int space in EmptySpaces)
                 {
-                    bool TaskInsertSucces = await _taskLocationCoordinatorService.AddUnloadTaskAsync(TaskType, this._selectedRamp.Name, this._selectedProduct.Barcode, space); //add task to DB and update location
+                    bool TaskInsertSucces = await _taskLocationCoordinatorService.AddTaskAsync(TaskType, this._selectedRamp.Name, this._selectedProduct.Barcode, space); //add task to DB and update location
                     if (TaskInsertSucces == false)
                     {
                         AmmountOfErrors++;

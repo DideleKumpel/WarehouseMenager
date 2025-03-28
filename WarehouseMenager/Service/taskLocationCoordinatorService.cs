@@ -13,7 +13,7 @@ namespace WarehouseMenager.Service
     internal class taskLocationCoordinatorService
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WarehouseDb"].ConnectionString;
-        public async Task<bool> AddUnloadTaskAsync(string Type, string Ramp, string Product, int LocationID)
+        public async Task<bool> AddTaskAsync(string Type, string Ramp, string Product, int LocationID)
         {
             using (var connection = new MySqlConnection(_connectionString))
             {
